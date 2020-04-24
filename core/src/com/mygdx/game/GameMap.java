@@ -30,6 +30,15 @@ public abstract class GameMap {
 			entities.add(new Enemy(e, this));
 		}
 	}
+	
+	public void destroy(Entity e) {
+		for (int i =0; i < entities.size(); i++) {
+			Entity ent = entities.get(i);
+			if(ent.equals(e)) {
+				entities.remove(e);
+			}
+		}
+	}
 	public void render(OrthographicCamera camera, SpriteBatch batch) {
 		for (Entity e : entities) {
 			e.render(batch);
@@ -44,13 +53,13 @@ public abstract class GameMap {
 	 * @param delta
 	 */
 	public void update(float delta) {
-		for (Entity e : entities) {
-			//this.playeronEnemycollision(delta);
+		//Has to use a int i = 0; type loop.
+		//Update removes and adds stuff to the list,
+		//so using a for-each loop could throw errors
+		for (int i = 0; i < entities.size(); i++) {
+			Entity e = entities.get(i);
 			e.update(delta, -9.8f);
 		}
-		/*if(Gdx.input.isKeyJustPressed(Keys.S)) { //ununsed saving feature
-			EntityLoader.saveEntities("entities", entities);
-		}*/
 	}
 	public void dispose() {
 	}

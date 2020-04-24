@@ -94,7 +94,7 @@ public abstract class Entity {
 		float tx = this.pos.x;
 		float ty = this.pos.y;
 		Boolean xtouches= false, ytouches = false;
-		int i = 0;//so I can remove any loops with minimal effort
+		int i = 0;//so I can remove any loops I put in with minimal effort
 		
 		
 		if(ex > tx) {
@@ -102,7 +102,7 @@ public abstract class Entity {
 				xtouches = true;
 			}else xtouches = false;
 		}else if (ex < tx) {
-			if (ex-ewidth >= (tx+i) +this.getWidth()){ 
+			if (ex-ewidth  >= (tx+i) +this.getWidth()){ 
 				xtouches = true;
 			}else xtouches = false;
 		}else xtouches = true;//if ex==tx
@@ -173,6 +173,20 @@ public abstract class Entity {
 	
 	public float getWeight() {
 		return type.getWeight();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Entity) {
+			Entity e = (Entity) o;
+			if(e.getType().equals(this.getType())) {
+				if(e.getX() == this.getX() && e.getY() == this.getY()) {
+					if(e.getYvel() == this.getYvel() && e.getXvel() == this.getXvel())
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 }

@@ -31,8 +31,9 @@ public class Enemy extends Entity{
 
 	public void update(float deltatime, float gravity) {
 	//	CCDLine line= p.moveline;
-		if(this.touches(p)) {
+		if(p.moveline.isonline(this)) {
 			p.setYvel(10*p.getWeight());
+			world.destroy(this);
 		}
 		
 		if (goingback == false) {

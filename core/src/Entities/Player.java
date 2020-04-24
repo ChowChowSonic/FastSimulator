@@ -13,6 +13,10 @@ public class Player extends Entity {
 	Animator render;
 	Texture image;
 	private float yvelocity = this.velocityY;
+	/**
+	 * The horizontal speed cap for the player: They
+	 * can not move faster than this in the X directon
+	 */
 	private static final int SPEEDCAP = 20;
 	public static final int JUMP_VEL = 5;
 
@@ -28,6 +32,7 @@ public class Player extends Entity {
 	public void render(SpriteBatch batch) {
 		// TODO Auto-generated method stub
 		batch.draw(image, pos.x, pos.y, getWidth(), getHeight());
+		//batch.draw(image, this.getX(), this.getY(), this.moveline.endx-this.moveline.startx, this.moveline.endy-this.moveline.starty);
 	}
 
 	public void update(float deltatime, float gravity) {
@@ -35,21 +40,27 @@ public class Player extends Entity {
 			this.velocityY += JUMP_VEL * getWeight();
 		else if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && this.velocityY > 0)
 			this.velocityY += JUMP_VEL * getWeight() * deltatime;
-		
-		
-		float screenpixel = 5*Gdx.graphics.getPpcX()/Gdx.graphics.getWidth();
+
+
+		float screenpixel = 3*Gdx.graphics.getPpcX()/Gdx.graphics.getWidth();
 		if (Gdx.input.isKeyPressed(Keys.D)) {
 			if(this.velocityX < SPEEDCAP) {
-			this.velocityX+= screenpixel;
+				this.velocityX+= screenpixel;
+				if(this.velocityX < 0) {
+					this.velocityX++;
+				}
 			}else if(!(this.velocityX <= SPEEDCAP)){
 				this.velocityX = SPEEDCAP;
 			}
 		}else if (Gdx.input.isKeyPressed(Keys.A)) {
 			if(this.velocityX > -SPEEDCAP) {
 				this.velocityX-=screenpixel;
-				}else if(!(this.velocityX >= -SPEEDCAP)){
-					this.velocityX = -SPEEDCAP;
+				if(this.velocityX > 0) {
+					this.velocityX--;
 				}
+			}else if(!(this.velocityX >= -SPEEDCAP)){
+				this.velocityX = -SPEEDCAP;
+			}
 		}else if(!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)){
 			if(this.velocityX > 0.5) {
 				this.velocityX--;
@@ -57,6 +68,7 @@ public class Player extends Entity {
 				this.velocityX++;
 			}else this.velocityX=0;
 		}
+		this.moveline = new CCDLine(this.getX(), this.getX()+this.velocityX, this.getY(), this.getY()+this.velocityY);
 		System.out.println(this.velocityX);
 		super.update(deltatime, gravity);//Apply gravity
 	}//ends update
