@@ -14,7 +14,8 @@ public abstract class Entity {
 	
 	/**
 	 * Responsible for the position of an entity.
-	 * pos.X is believed to be the far right of the entity. [NEEDS VERIFICATION]
+	 * pos.X is believed to be the far right of the entity.
+	 * pos.Y is believed to be the bottom of the entity.
 	 */
 	protected Vector2 pos;
 	protected EntityType type;
@@ -47,20 +48,26 @@ public abstract class Entity {
 	}
 	
 	public void update (float deltaTime, float gravity) {
+		//Was at one point in the (now removed) MoveX() method
 		float newX = (float) Math.floor(pos.x + this.velocityX);
 		if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight())) {
 			this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
 			this.pos.x = newX;
-	}
-		else {
-			this.velocityX /= 2;
+	}else {
+			for(int i =0; i < this.velocityX; i++) {
+				newX = pos.x+i;
 			if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight())) {
 				this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
 				this.pos.x = newX;
-			}else this.velocityX = 0;
+				break;
+			}
 		}
-		float newY = pos.y;
+			this.velocityX = 0;
+	}
+		//end of moveX()
 		
+		//This half is responsible for the movement in the Y
+		float newY = pos.y;
 		this.velocityY += gravity * deltaTime * getWeight();
 		newY += this.velocityY * deltaTime;
 		
@@ -82,37 +89,39 @@ public abstract class Entity {
 	}//*/
 	
 	/**
-	 * This method makes me sad
+	 * This method true instantly if either moveline (this.moveline or e.moveline) intersects the other. 
+	 * Otherwise it checks the bounding boxes of both the entity and the player, compares them
+	 * and returns true if they overlap
 	 * @param e
 	 * @return
 	 */
 	public boolean touches(Entity e) {
+		if(this.moveline!=null && this.moveline.isonline(e)) return true;
+		else if(e.moveline!=null && e.moveline.isonline(this)) return true;
 		float ex = e.pos.x; 
 		float ey = e.pos.y; 
 		float ewidth = e.getWidth();
 		float eheight = e.getHeight();
 		float tx = this.pos.x;
 		float ty = this.pos.y;
-		Boolean xtouches= false, ytouches = false;
-		int i = 0;//so I can remove any loops I put in with minimal effort
-		
+		Boolean xtouches= false, ytouches = false;		
 		
 		if(ex > tx) {
-			if (ex+ewidth <= (tx+i) -this.getWidth()) { 
+			if (ex+ewidth <= (tx)) { 
 				xtouches = true;
 			}else xtouches = false;
 		}else if (ex < tx) {
-			if (ex-ewidth  >= (tx+i) +this.getWidth()){ 
+			if (ex  >= (tx) +this.getWidth()){ 
 				xtouches = true;
 			}else xtouches = false;
 		}else xtouches = true;//if ex==tx
 		if(ey > ty) {
-			if (ey+eheight <= (ty+i) -this.getHeight()) {
+			if (ey+eheight <= (ty)) {
 				ytouches = true;
 			}
 			else ytouches = false;
 		}else if (ey < ty) {
-			if (ey-eheight >= (ty+i) +this.getHeight()){
+			if (ey >= (ty) +this.getHeight()){
 				ytouches = true;
 			}
 			else ytouches = false;

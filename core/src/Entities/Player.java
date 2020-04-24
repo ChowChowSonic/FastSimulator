@@ -15,7 +15,7 @@ public class Player extends Entity {
 	private float yvelocity = this.velocityY;
 	/**
 	 * The horizontal speed cap for the player: They
-	 * can not move faster than this in the X directon
+	 * can not move faster than this value in the X directon
 	 */
 	private static final int SPEEDCAP = 20;
 	public static final int JUMP_VEL = 5;
@@ -41,10 +41,9 @@ public class Player extends Entity {
 		else if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && this.velocityY > 0)
 			this.velocityY += JUMP_VEL * getWeight() * deltatime;
 
-
 		float screenpixel = 3*Gdx.graphics.getPpcX()/Gdx.graphics.getWidth();
 		if (Gdx.input.isKeyPressed(Keys.D)) {
-			if(this.velocityX < SPEEDCAP) {
+			if((int)this.velocityX < SPEEDCAP) {
 				this.velocityX+= screenpixel;
 				if(this.velocityX < 0) {
 					this.velocityX++;
@@ -53,7 +52,7 @@ public class Player extends Entity {
 				this.velocityX = SPEEDCAP;
 			}
 		}else if (Gdx.input.isKeyPressed(Keys.A)) {
-			if(this.velocityX > -SPEEDCAP) {
+			if((int)this.velocityX > -SPEEDCAP) {
 				this.velocityX-=screenpixel;
 				if(this.velocityX > 0) {
 					this.velocityX--;
@@ -61,15 +60,14 @@ public class Player extends Entity {
 			}else if(!(this.velocityX >= -SPEEDCAP)){
 				this.velocityX = -SPEEDCAP;
 			}
-		}else if(!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)){
-			if(this.velocityX > 0.5) {
-				this.velocityX--;
-			}else if(this.velocityX < -0.5) {
-				this.velocityX++;
+		}else if(!(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D))){
+			if(this.velocityX > 1) {
+				this.velocityX-=0.5;
+			}else if(this.velocityX < -1) {
+				this.velocityX+=0.5;
 			}else this.velocityX=0;
 		}
-		this.moveline = new CCDLine(this.getX(), this.getX()+this.velocityX, this.getY(), this.getY()+this.velocityY);
-		System.out.println(this.velocityX);
+		//System.out.println(this.velocityX);
 		super.update(deltatime, gravity);//Apply gravity
 	}//ends update
 
