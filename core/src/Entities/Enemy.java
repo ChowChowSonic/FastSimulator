@@ -30,8 +30,8 @@ public class Enemy extends Entity{
 	}
 
 	public void update(float deltatime, float gravity) {
-		CCDLine line= p.moveline;
-		if(line.isonline(p)) {
+	//	CCDLine line= p.moveline;
+		if(this.touches(p)) {
 			p.setYvel(10*p.getWeight());
 		}
 		

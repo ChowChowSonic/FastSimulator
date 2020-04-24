@@ -53,7 +53,11 @@ public abstract class Entity {
 			this.pos.x = newX;
 	}
 		else {
-			this.velocityX = 0;
+			this.velocityX /= 2;
+			if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight())) {
+				this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
+				this.pos.x = newX;
+			}else this.velocityX = 0;
 		}
 		float newY = pos.y;
 		
@@ -90,36 +94,29 @@ public abstract class Entity {
 		float tx = this.pos.x;
 		float ty = this.pos.y;
 		Boolean xtouches= false, ytouches = false;
-		int i = 0;//so I can remove the loops with minimal effort
+		int i = 0;//so I can remove any loops with minimal effort
 		
-	//	for(int i = 0; i<= this.getXvel(); i++) {
+		
 		if(ex > tx) {
 			if (ex+ewidth <= (tx+i) -this.getWidth()) { 
 				xtouches = true;
-			//	break;
 			}else xtouches = false;
 		}else if (ex < tx) {
 			if (ex-ewidth >= (tx+i) +this.getWidth()){ 
 				xtouches = true;
-			//	break;
 			}else xtouches = false;
-		}else xtouches = true;
-	//}
-		//for(int i = 0; i<= this.getYvel(); i++) {
+		}else xtouches = true;//if ex==tx
 		if(ey > ty) {
 			if (ey+eheight <= (ty+i) -this.getHeight()) {
 				ytouches = true;
-			//	break;
 			}
 			else ytouches = false;
 		}else if (ey < ty) {
 			if (ey-eheight >= (ty+i) +this.getHeight()){
 				ytouches = true;
-			//	break;
 			}
 			else ytouches = false;
-		}else ytouches = true;
-		//}
+		}else ytouches = true;//if ey==ty
 		return (xtouches && ytouches);
 	}
 	
