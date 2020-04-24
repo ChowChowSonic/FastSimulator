@@ -51,8 +51,8 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
-        if(p !=null)camera.translate((int)Math.ceil((p.getX()-camera.position.x)*deltatime*Math.abs(p.getXvel()+1)), 
-        		(int)Math.ceil((p.getY() - camera.position.y + p.getYvel())*deltatime*Math.abs(p.getYvel()+1)));
+        camera.position.x = p.getX()-p.getXvel();
+        camera.position.y = p.getY()-p.getYvel();
         camera.update();//Translate BEFORE Update. Always. 
         gameMap.update(deltatime);
         gameMap.render(camera, batch);

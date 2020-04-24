@@ -31,7 +31,9 @@ public class Player extends Entity {
 	@Override
 	public void render(SpriteBatch batch) {
 		// TODO Auto-generated method stub
+		if(this.velocityX >= 0)
 		batch.draw(image, pos.x, pos.y, getWidth(), getHeight());
+		else batch.draw(image, pos.x+getWidth(), pos.y, -getWidth(), getHeight());
 		//batch.draw(image, this.getX(), this.getY(), this.moveline.endx-this.moveline.startx, this.moveline.endy-this.moveline.starty);
 	}
 
@@ -58,9 +60,9 @@ public class Player extends Entity {
 					this.velocityX--;
 				}
 			}else if(!(this.velocityX >= -SPEEDCAP)){
-				this.velocityX = -SPEEDCAP;
+				this.velocityX = -SPEEDCAP-0.01f;
 			}
-		}else if(!(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D))){
+		}else {
 			if(this.velocityX > 1) {
 				this.velocityX-=0.5;
 			}else if(this.velocityX < -1) {

@@ -2,6 +2,7 @@ package Entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
@@ -14,11 +15,17 @@ public abstract class Entity {
 	
 	/**
 	 * Responsible for the position of an entity.
-	 * pos.X is believed to be the far right of the entity.
+	 * pos.X is believed to be the far left of the entity.
 	 * pos.Y is believed to be the bottom of the entity.
 	 */
 	protected Vector2 pos;
 	protected EntityType type;
+	
+	/**
+	 * This is a CCDLine, or Constant Collision Detection Line.
+	 * This line is used for determining if a player hits an object,
+	 * even when it's moving so fast that it "Teleports" through/around it 
+	 */
 	protected CCDLine moveline;
 	
 	/**
@@ -38,6 +45,10 @@ public abstract class Entity {
 	 * overriding the getXvel() method [NEEDS VERIFICATION] 
 	 */
 	protected float velocityX = 0;
+	
+	/**
+	 * The map the object is located in
+	 */
 	protected GameMap map;
 	protected boolean grounded = false;
 	
@@ -84,6 +95,9 @@ public abstract class Entity {
 	}
 	
 	public abstract void render (SpriteBatch batch);
+	public void render (TextureRegion batch) {
+		
+	};
 	
 	/*	protected float moveX (float amount) {
 	}//*/
