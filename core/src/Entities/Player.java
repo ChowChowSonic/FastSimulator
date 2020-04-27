@@ -1,12 +1,10 @@
 package Entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.CCDLine;
 import com.mygdx.game.GameMap;
 
@@ -16,6 +14,7 @@ public class Player extends Entity {
 	SpriteBatch spriteBatch;
 	private static final int FRAME_COLS = 1, FRAME_ROWS = 1;
 	
+	protected boolean wasjusthit = false;
 	private float stateTime=0;
 	private float yvelocity = this.velocityY;
 	/**
@@ -39,13 +38,14 @@ public class Player extends Entity {
 		}else batch.draw(image, this.getX()+this.getWidth(), this.getY(), -this.getWidth(), this.getHeight());;
 	}
 
+	private boolean runonce = false;
 	public void update(float deltatime, float gravity) {
-		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded)
-			this.velocityY += JUMP_VEL * getWeight();
-		else if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && this.velocityY > JUMP_VEL+1)
-			this.velocityY += JUMP_VEL * getWeight() * deltatime;
-
-		float screenpixel = 3*Gdx.graphics.getPpcX()/Gdx.graphics.getWidth();
+		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
+			this.velocityY += 1.5* JUMP_VEL * getWeight();
+		}
+		float screenpixel = 2*Gdx.graphics.getPpcX()/Gdx.graphics.getWidth();
+		if(grounded || this.velocityX == 0) wasjusthit=false;
+		if(!wasjusthit)
 		if (Gdx.input.isKeyPressed(Keys.D)) {
 			if((int)this.velocityX < SPEEDCAP) {
 				this.velocityX+= screenpixel;

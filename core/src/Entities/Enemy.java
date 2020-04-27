@@ -34,6 +34,7 @@ public class Enemy extends Entity{
 			p.setYvel(10*p.getWeight());
 			world.destroy(this);
 		}else if(p.touches(this)) {
+			p.wasjusthit = true;
 			if(p.getX() >= this.getX()) {
 				p.setXvel(5);
 				p.setYvel(p.getWeight()*5);

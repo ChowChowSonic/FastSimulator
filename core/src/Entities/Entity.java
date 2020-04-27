@@ -85,6 +85,8 @@ public abstract class Entity {
 				this.velocityY = 0;
 				this.pos.y = (float) Math.floor(pos.y);
 				grounded = true;
+			}else if(velocityY > 0){
+				this.velocityY = gravity;
 			}
 		} else {
 			this.pos.y = newY;
