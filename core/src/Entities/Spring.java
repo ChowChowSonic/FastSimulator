@@ -25,8 +25,8 @@ public class Spring extends Entity{
 	}
 	
 	public void update(float deltaTime,float gravity) {
-		if(p.touches(this)){
-			p.setYvel(15*p.getWeight());
+		if(p.touches(this)|| this.touches(p)){
+			p.setYvel(12*p.getWeight());
 		}
 		super.update(deltaTime, gravity);
 	}

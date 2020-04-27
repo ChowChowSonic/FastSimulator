@@ -63,19 +63,17 @@ public abstract class Entity {
 		//Was at one point in the (now removed) MoveX() method
 		float newX = (float) Math.floor(pos.x + this.velocityX);
 		if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight(), LAYER)) {
-			this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
 			this.pos.x = newX;
 	}else {
 			for(int i =0; i < this.velocityX; i++) {
 				newX = pos.x+i;
 			if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight(), LAYER)) {
-				this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
 				this.pos.x = newX;
 				break;
 			}
 		}
-			this.velocityX = 0;
 	}
+		this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
 		//end of moveX()
 		
 		//This half is responsible for the movement in the Y
@@ -87,8 +85,8 @@ public abstract class Entity {
 			if (velocityY < 0) {
 				this.pos.y = (float) Math.floor(pos.y);
 				grounded = true;
+				this.velocityY = 0;
 			}
-			this.velocityY = 0;
 		} else {
 			this.pos.y = newY;
 			grounded = false;
@@ -111,8 +109,6 @@ public abstract class Entity {
 	 * @return
 	 */
 	public boolean touches(Entity e) {
-		if(this.moveline!=null && this.moveline.isonline(e)) return true;
-		else if(e.moveline!=null && e.moveline.isonline(this)) return true;
 		float ex = e.pos.x; 
 		float ey = e.pos.y; 
 		float ewidth = e.getWidth();
@@ -141,6 +137,8 @@ public abstract class Entity {
 			}
 			else ytouches = false;
 		}else ytouches = true;//if ey==ty
+		if(this.moveline!=null && this.moveline.isonline(e)) return true;
+		else if(e.moveline!=null && e.moveline.isonline(this)) return true;
 		return (xtouches && ytouches);
 	}
 	

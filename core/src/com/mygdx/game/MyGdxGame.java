@@ -42,7 +42,7 @@ public class MyGdxGame extends ApplicationAdapter {
         camera.setToOrtho(false,w,h);
         camera.update();
         
-        gameMap = new TiledGameMap("DemoMap.tmx", "Discord Sounds.mp3");// Map to be loaded
+        gameMap = new TiledGameMap("DemoMap.tmx", "Final Fantasy VII Remake - [ Battle Theme ] Let the Battles Begin (OST).mp3");// Map to be loaded
         //gameMap = new TiledGameMap(); //...Or use a default map
         p=(Player) gameMap.getEntitybyType(new Player());
 	}
@@ -55,8 +55,8 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         if(p !=null) {
-        camera.position.x = p.getX()-p.getXvel();
-        camera.position.y = p.getY()-p.getYvel();
+       camera.position.x = p.getX();
+       camera.position.y = p.getY();
         }
         camera.update();//Translate BEFORE Update. Always. 
         gameMap.update(deltatime);

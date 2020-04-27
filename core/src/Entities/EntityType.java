@@ -51,8 +51,6 @@ public enum EntityType {
 			Gdx.app.error("Entity Loader", "Could not load entity of type " + type.id);
 			return null;
 		}
-
-		
 	}
 	
 	private static HashMap<String, EntityType> EntityTypes;

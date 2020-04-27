@@ -29,12 +29,15 @@ public class TiledGameMap extends GameMap{
 	public TiledGameMap(String mapFileName, String musicFileName) {
 		world = new TmxMapLoader().load(mapFileName);
 		worldRenderer = new CustomOrthRenderer(world);
+		
+		//music stuff
 		m = Gdx.audio.newMusic(Gdx.files.internal(musicFileName));
+		m.setLooping(false);
 		m.play();
 		m.setOnCompletionListener(new Music.OnCompletionListener() {
 		    @Override
 		    public void onCompletion(Music aMusic) {  
-		       aMusic.setPosition(100);
+		       aMusic.setPosition(200);
 		       aMusic.play();
 		    }
 		});

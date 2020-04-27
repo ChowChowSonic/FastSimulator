@@ -2,18 +2,21 @@ package Entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.mygdx.game.Animator;
 import com.mygdx.game.CCDLine;
 import com.mygdx.game.GameMap;
 
 public class Player extends Entity {
 
 	Texture image;
-	Animator animator;
+	SpriteBatch spriteBatch;
+	private static final int FRAME_COLS = 1, FRAME_ROWS = 1;
+	
+	private float stateTime=0;
 	private float yvelocity = this.velocityY;
 	/**
 	 * The horizontal speed cap for the player: They
@@ -28,7 +31,6 @@ public class Player extends Entity {
 		super.create(snapshot, EntityType.PLAYER, world);
 		image = new Texture("SUPER SPONGEBOB.png");
 		this.moveline = new CCDLine(this.getX(), this.getX()+this.velocityX, this.getY(), this.getY()+this.velocityY);
-		//animator = new Animator(image, 2,2, 1f);
 	}
 
 	public void render(SpriteBatch batch) {
