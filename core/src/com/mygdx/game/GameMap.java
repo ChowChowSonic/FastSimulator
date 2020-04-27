@@ -31,8 +31,9 @@ public abstract class GameMap {
 			if(this.getEntitybyType(new Player()) == null) {
 				EntitySnapshot e = new EntitySnapshot(EntityType.PLAYER.getId(), 1435.0f, 420.0f);
 				entities.add(new Player(e, this));
-				entities.add(new Enemy(e, this));
 				entities.add(new Spring(e, this));
+				e = new EntitySnapshot(EntityType.ENEMY.getId(), 1300.0f, 420.0f);
+				entities.add(new Enemy(e, this));
 			}
 		}
 	}

@@ -58,8 +58,8 @@ public class MyGdxGame extends ApplicationAdapter {
        camera.position.x = p.getX();
        camera.position.y = p.getY();
         }
-        camera.update();//Translate BEFORE Update. Always. 
         gameMap.update(deltatime);
+        camera.update();//Translate BEFORE Update. Always. 
         gameMap.render(camera, batch);
 	}
 	

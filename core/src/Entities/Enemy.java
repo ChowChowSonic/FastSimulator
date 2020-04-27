@@ -30,22 +30,22 @@ public class Enemy extends Entity{
 	}
 
 	public void update(float deltatime, float gravity) {
-		if(p.touches(this)) {
+		if(p.touches(this) && Math.sqrt(Math.pow(p.getXvel(), 2)+Math.pow(p.getYvel(), 2)) >5) {
 			p.setYvel(10*p.getWeight());
 			world.destroy(this);
-		}
+		}else if(p.touches(this)) System.exit(0);
 		
 		if (goingback == false) {
 			cliff = world.getTileTypeByLocation(1, this.pos.x+TileType.TILE_SIZE+5, this.pos.y - TileType.TILE_SIZE);
-			blockade = world.getTileTypeByLocation(1, pos.x+TileType.TILE_SIZE+this.getWidth(), pos.y);
+			blockade = world.getTileTypeByLocation(1, pos.x+TileType.TILE_SIZE+5+this.getWidth(), pos.y);
 			if(blockade != null && blockade.isCollidable()) {
 				goingback=!goingback;
 				blocktowatch=blockade;
 			}else blocktowatch=cliff;
 		}
 		else if(goingback == true){
-			cliff = world.getTileTypeByLocation(1, this.pos.x - TileType.TILE_SIZE, this.pos.y - TileType.TILE_SIZE);
-			blockade = world.getTileTypeByLocation(1, this.pos.x - TileType.TILE_SIZE, this.pos.y);
+			cliff = world.getTileTypeByLocation(1, this.pos.x - TileType.TILE_SIZE+5, this.pos.y - TileType.TILE_SIZE);
+			blockade = world.getTileTypeByLocation(1, this.pos.x - TileType.TILE_SIZE+5, this.pos.y);
 			if(blockade != null && blockade.isCollidable()) {
 				blocktowatch=blockade;
 				goingback=!goingback;

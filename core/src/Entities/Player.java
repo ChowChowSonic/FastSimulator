@@ -42,7 +42,7 @@ public class Player extends Entity {
 	public void update(float deltatime, float gravity) {
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded)
 			this.velocityY += JUMP_VEL * getWeight();
-		else if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && this.velocityY > 0)
+		else if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && this.velocityY > JUMP_VEL+1)
 			this.velocityY += JUMP_VEL * getWeight() * deltatime;
 
 		float screenpixel = 3*Gdx.graphics.getPpcX()/Gdx.graphics.getWidth();

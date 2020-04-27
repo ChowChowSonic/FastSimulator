@@ -72,25 +72,25 @@ public abstract class Entity {
 				break;
 			}
 		}
+			this.velocityX=0;
 	}
-		this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
 		//end of moveX()
 		
 		//This half is responsible for the movement in the Y
-		float newY = pos.y;
-		this.velocityY += gravity * deltaTime * getWeight();
-		newY += this.velocityY * deltaTime;
+		this.velocityY += (gravity * deltaTime * this.getWeight());
+		int newY = (int) (pos.y+(this.velocityY * deltaTime));
 		
 		if (map.RectCollidesWithMap(pos.x, newY, getWidth(), getHeight(), LAYER)) {
 			if (velocityY < 0) {
+				this.velocityY = 0;
 				this.pos.y = (float) Math.floor(pos.y);
 				grounded = true;
-				this.velocityY = 0;
 			}
 		} else {
 			this.pos.y = newY;
 			grounded = false;
 		}
+		this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
 	}
 	
 	public abstract void render (SpriteBatch batch);
@@ -102,40 +102,39 @@ public abstract class Entity {
 	}//*/
 	
 	/**
-	 * This method true instantly if either moveline (this.moveline or e.moveline) intersects the other. 
+	 * This method true if either moveline (this.moveline or e.moveline) intersects the other. 
 	 * Otherwise it checks the bounding boxes of both the entity and the player, compares them
 	 * and returns true if they overlap
 	 * @param e
 	 * @return
 	 */
 	public boolean touches(Entity e) {
-		float ex = e.pos.x; 
-		float ey = e.pos.y; 
+		float x2 = e.pos.x; 
+		float y2 = e.pos.y; 
 		float ewidth = e.getWidth();
 		float eheight = e.getHeight();
-		float tx = this.pos.x;
-		float ty = this.pos.y;
+		float x1 = this.pos.x;
+		float y1 = this.pos.y;
 		Boolean xtouches= false, ytouches = false;		
 		
-		if(ex > tx) {
-			if (ex+ewidth <= (tx)) { 
+		if(x1 > x2) {
+			if (x2+ewidth >= (x1)) { 
 				xtouches = true;
 			}else xtouches = false;
-		}else if (ex < tx) {
-			if (ex  >= (tx) +this.getWidth()){ 
+		}else if (x2 > x1) {
+			if (x1+this.getWidth() >= x2){ 
 				xtouches = true;
 			}else xtouches = false;
 		}else xtouches = true;//if ex==tx
-		if(ey > ty) {
-			if (ey+eheight <= (ty)) {
+		
+		if(y1 > y2) {
+			if (y2+eheight >= (y1)) { 
 				ytouches = true;
-			}
-			else ytouches = false;
-		}else if (ey < ty) {
-			if (ey >= (ty) +this.getHeight()){
+			}else ytouches = false;
+		}else if (y2 > y1) {
+			if (y1+this.getHeight() >= y2){ 
 				ytouches = true;
-			}
-			else ytouches = false;
+			}else ytouches = false;
 		}else ytouches = true;//if ey==ty
 		if(this.moveline!=null && this.moveline.isonline(e)) return true;
 		else if(e.moveline!=null && e.moveline.isonline(this)) return true;
