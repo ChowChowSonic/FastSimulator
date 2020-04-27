@@ -33,7 +33,15 @@ public class Enemy extends Entity{
 		if(p.touches(this) && Math.sqrt(Math.pow(p.getXvel(), 2)+Math.pow(p.getYvel(), 2)) >5) {
 			p.setYvel(10*p.getWeight());
 			world.destroy(this);
-		}else if(p.touches(this)) System.exit(0);
+		}else if(p.touches(this)) {
+			if(p.getX() >= this.getX()) {
+				p.setXvel(5);
+				p.setYvel(p.getWeight()*5);
+			}else {
+				p.setXvel(-5);
+				p.setYvel(p.getWeight()*5);
+			}
+		}
 		
 		if (goingback == false) {
 			cliff = world.getTileTypeByLocation(1, this.pos.x+TileType.TILE_SIZE+5, this.pos.y - TileType.TILE_SIZE);

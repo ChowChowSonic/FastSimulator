@@ -66,10 +66,14 @@ public class Player extends Entity {
 			}
 		}else {
 			if(this.velocityX > 1) {
-				this.velocityX-=0.5;
+				if(this.grounded) {
+				this.velocityX-=0.25;
+				}else this.velocityX-=screenpixel;
 			}else if(this.velocityX < -1) {
-				this.velocityX+=0.5;
-			}else this.velocityX=0;
+				if(this.grounded) {
+					this.velocityX+=0.25;
+					}else this.velocityX+=screenpixel;
+			}else if(this.grounded)this.velocityX=0;
 		}
 		//System.out.println(this.velocityX);
 		super.update(deltatime, gravity);//Apply gravity
