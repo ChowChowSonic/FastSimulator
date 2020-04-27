@@ -1,5 +1,8 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Music.OnCompletionListener;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,6 +17,8 @@ public class TiledGameMap extends GameMap{
 
 	TiledMap world;
 	CustomOrthRenderer worldRenderer;
+	Music m;
+	Music mloop;
 
 	/**
 	 * Creates a new TiledGameMap object from a file specified by filename.
@@ -21,9 +26,18 @@ public class TiledGameMap extends GameMap{
 	 * folder, found within the game's directory. 
 	 * @param filename - Name of the file being used. INCLUDE THE EXTENSION.
 	 */
-	public TiledGameMap(String filename) {
-		world = new TmxMapLoader().load(filename);
+	public TiledGameMap(String mapFileName, String musicFileName) {
+		world = new TmxMapLoader().load(mapFileName);
 		worldRenderer = new CustomOrthRenderer(world);
+		m = Gdx.audio.newMusic(Gdx.files.internal(musicFileName));
+		m.play();
+		m.setOnCompletionListener(new Music.OnCompletionListener() {
+		    @Override
+		    public void onCompletion(Music aMusic) {  
+		       aMusic.setPosition(100);
+		       aMusic.play();
+		    }
+		});
 	}
 	
 	/**

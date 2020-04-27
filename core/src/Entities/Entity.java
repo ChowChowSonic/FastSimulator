@@ -50,6 +50,7 @@ public abstract class Entity {
 	 * The map the object is located in
 	 */
 	protected GameMap map;
+	protected final int LAYER = 1;
 	protected boolean grounded = false;
 	
 	public void create (EntitySnapshot snapshot, EntityType type, GameMap map) {
@@ -61,13 +62,13 @@ public abstract class Entity {
 	public void update (float deltaTime, float gravity) {
 		//Was at one point in the (now removed) MoveX() method
 		float newX = (float) Math.floor(pos.x + this.velocityX);
-		if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight())) {
+		if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight(), LAYER)) {
 			this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
 			this.pos.x = newX;
 	}else {
 			for(int i =0; i < this.velocityX; i++) {
 				newX = pos.x+i;
-			if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight())) {
+			if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight(), LAYER)) {
 				this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
 				this.pos.x = newX;
 				break;
@@ -82,7 +83,7 @@ public abstract class Entity {
 		this.velocityY += gravity * deltaTime * getWeight();
 		newY += this.velocityY * deltaTime;
 		
-		if (map.RectCollidesWithMap(pos.x, newY, getWidth(), getHeight())) {
+		if (map.RectCollidesWithMap(pos.x, newY, getWidth(), getHeight(), LAYER)) {
 			if (velocityY < 0) {
 				this.pos.y = (float) Math.floor(pos.y);
 				grounded = true;

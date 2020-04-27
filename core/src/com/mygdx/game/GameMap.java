@@ -3,21 +3,24 @@ package com.mygdx.game;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import Entities.Enemy;
 import Entities.Entity;
 import Entities.EntitySnapshot;
 import Entities.EntityType;
 import Entities.Player;
+import Entities.Spring;
 
 public abstract class GameMap {
 
 	protected ArrayList<Entity> entities; 
 	final int SCREENPILLOWING_X = (int)Math.ceil(0.3*Gdx.graphics.getWidth());//prevents the player from seeing outside the map
-	final int SCREENPILLOWING_Y = 250;//ditto above
-	
+	final int SCREENPILLOWING_Y = 300;//ditto above
+
 	/**
 	 * Creates a new GameMap class object, and loads in a new array of entities from a file.
 	 * File directory is determined by EntityLoader.loadEntities();
@@ -25,12 +28,15 @@ public abstract class GameMap {
 	public GameMap() {
 		entities = new ArrayList<Entity>();
 		if(this.getEntitybyType(new Player()) == null) {
-			EntitySnapshot e = new EntitySnapshot(EntityType.PLAYER.getId(), 1200.0f, 400.0f);
-			entities.add(new Player(e, this));
-			entities.add(new Enemy(e, this));
+			if(this.getEntitybyType(new Player()) == null) {
+				EntitySnapshot e = new EntitySnapshot(EntityType.PLAYER.getId(), 1200.0f, 420.0f);
+				entities.add(new Player(e, this));
+				entities.add(new Enemy(e, this));
+				entities.add(new Spring(e, this));
+			}
 		}
 	}
-	
+
 	public void destroy(Entity e) {
 		for (int i =0; i < entities.size(); i++) {
 			Entity ent = entities.get(i);
@@ -44,7 +50,7 @@ public abstract class GameMap {
 			e.render(batch);
 		}
 	}
-	
+
 	/**
 	 * The Update(float, float) methods in entities being updated MUST have the following:
 	 * super.update(float, float) in there somewhere
@@ -83,23 +89,21 @@ public abstract class GameMap {
 	public abstract int getWidth();
 	public abstract int getLayers();
 
-	public boolean RectCollidesWithMap(float x, float y, int width, int height) {
+	public boolean RectCollidesWithMap(float x, float y, int width, int height, int layer) {
 		boolean isoutofbounds = (x-SCREENPILLOWING_X) < 0 || (y - SCREENPILLOWING_Y) < 0 || 
 				x + width + SCREENPILLOWING_X > getPixelWidth() || (y + height + SCREENPILLOWING_Y > getPixelHeight());
-		if(isoutofbounds) return true;
-		
-		for (int row = (int) (y/TileType.TILE_SIZE); row < Math.ceil((y+height)/TileType.TILE_SIZE); row++) {
-			for (int col = (int) (x/TileType.TILE_SIZE); col < Math.ceil((x+width)/TileType.TILE_SIZE); col++) {
-				for (int layer = 0; layer < getLayers(); layer++) {
-				TileType type = getTileTypeByLocation(layer, col, row);
-				if(type != null && type.isCollidable()) {
-					return true;
+				if(isoutofbounds) return true;
+
+				for (int row = (int) (y/TileType.TILE_SIZE); row < Math.ceil((y+height)/TileType.TILE_SIZE); row++) {
+					for (int col = (int) (x/TileType.TILE_SIZE); col < Math.ceil((x+width)/TileType.TILE_SIZE); col++) {
+						TileType type = getTileTypeByLocation(layer, col, row);
+						if(type != null && type.isCollidable()) {
+							return true;
+						}
 					}
 				}
-			}
-		}
-		return false;
-		
+				return false;
+
 	}//ends RectCollidesWithMap
 
 	public int getPixelWidth() { 
@@ -108,7 +112,7 @@ public abstract class GameMap {
 	public int getPixelHeight() { 
 		return(this.getHeight()*TileType.TILE_SIZE);
 	}
-	
+
 	public ArrayList<Entity> getentitylist(){
 		return entities;
 	}
@@ -128,6 +132,16 @@ public abstract class GameMap {
 			}
 		}
 		return enemies;
+	}
+
+	public void addEntity(Entity e) {
+		entities.add(e);
+	}
+	public void addEntity(ArrayList<Entity> e) {
+		for (int i = 0; i < e.size(); i++)
+			if(e.get(i) !=null)
+				entities.add(e.get(i));
+			else System.out.println("Entity not found");
 	}
 
 }//ends class

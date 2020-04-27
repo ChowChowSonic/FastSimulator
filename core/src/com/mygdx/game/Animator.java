@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -7,37 +9,34 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
 
 public class Animator {
-    private Array<TextureRegion> frames;
-    private float maxFrameTime;
-    private float currentFrameTime;
-    private int frameCount;
-    private int frame;
+	ArrayList<TextureRegion> frameregions;
+	Texture solotexture;
+	int frame = 0;
+	float playspeed;
 
-    public Animator(TextureRegion region, int frameCount, float cycleTime){
-        frames = new Array<TextureRegion>();
-        int frameWidth = region.getRegionWidth() / frameCount;
-        for(int i = 0; i < frameCount; i++){
-            frames.add(new TextureRegion(region, i * frameWidth, 0, frameWidth, region.getRegionHeight()));
-        }
-        this.frameCount = frameCount;
-        maxFrameTime = cycleTime / frameCount;
-        frame = 0;
-    }
-
-    public void update(float dt){
-        currentFrameTime += dt;
-        if(currentFrameTime > maxFrameTime){
-            frame++;
-            currentFrameTime = 0;
-        }
-        if(frame >= frameCount)
-            frame = 0;
-    }
-
-    public TextureRegion getFrame(){
-        return frames.get(frame);
-    }
+	public Animator(Texture r, int width, int height, float speed) {
+		playspeed=speed;
+		if(width > 1 && height > 1) {
+		TextureRegion region = new TextureRegion(r);
+		TextureRegion[][] result = region.split(width, height);
+		for(int i =0; i< result.length; i++) {
+			for(int i2 = 0; i2 < result[i].length; i2++) {
+				frameregions.add(result[i][i2]);
+			}
+		}
+		}else solotexture=r;
+		frameregions.trimToSize();
+	}
+	public Texture getFrame() {
+		if(solotexture !=null) {
+		if(frame < frameregions.size()) {
+		return frameregions.get(frame).getTexture();
+		}else {
+			frame=0;
+			return frameregions.get(frame).getTexture();
+		}
+		}else return solotexture;
+	}
 }

@@ -3,15 +3,17 @@ package Entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.Animator;
 import com.mygdx.game.CCDLine;
 import com.mygdx.game.GameMap;
 
 public class Player extends Entity {
 
-	Animator render;
 	Texture image;
+	Animator animator;
 	private float yvelocity = this.velocityY;
 	/**
 	 * The horizontal speed cap for the player: They
@@ -26,15 +28,13 @@ public class Player extends Entity {
 		super.create(snapshot, EntityType.PLAYER, world);
 		image = new Texture("SUPER SPONGEBOB.png");
 		this.moveline = new CCDLine(this.getX(), this.getX()+this.velocityX, this.getY(), this.getY()+this.velocityY);
+		//animator = new Animator(image, 2,2, 1f);
 	}
 
-	@Override
 	public void render(SpriteBatch batch) {
-		// TODO Auto-generated method stub
-		if(this.velocityX >= 0)
-		batch.draw(image, pos.x, pos.y, getWidth(), getHeight());
-		else batch.draw(image, pos.x+getWidth(), pos.y, -getWidth(), getHeight());
-		//batch.draw(image, this.getX(), this.getY(), this.moveline.endx-this.moveline.startx, this.moveline.endy-this.moveline.starty);
+		if(this.velocityX >= 0){
+			batch.draw(image, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		}else batch.draw(image, this.getX()+this.getWidth(), this.getY(), -this.getWidth(), this.getHeight());;
 	}
 
 	public void update(float deltatime, float gravity) {
