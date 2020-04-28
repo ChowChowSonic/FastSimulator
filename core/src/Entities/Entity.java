@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.utils.Box2DBuild;
 import com.mygdx.game.CCDLine;
 import com.mygdx.game.GameMap;
+import com.mygdx.game.TileType;
 
 public abstract class Entity {
 	
@@ -94,6 +95,12 @@ public abstract class Entity {
 			grounded = false;
 		}
 		this.moveline = new CCDLine(this.pos.x, newX, this.pos.y, this.pos.y+this.velocityY);
+		
+		//Angle registration
+		TileType t = map.getTileTypeByLocation(this.LAYER, this.pos.x+(this.getWidth()/2), this.pos.y-8);
+		if(t != null && t.isCollidable()) {
+		this.angle = t.getAngle();
+		}else this.angle =0;
 	}
 	
 	public abstract void render (SpriteBatch batch);

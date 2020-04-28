@@ -7,21 +7,23 @@ public enum TileType {
 	/* When working with a TMX file, make sure the ID of each block used  
 	 * corresponds to the ID of the block here PLUS ONE
 	 */
-	GRASS(1, true, "Grass"),
-	DIRT(2, true, "Dirt"),
-	SKY(3, false, "Sky"),
-	LAVA(4, true, "Lava"),
-	CLOUD(5, true, "Cloud"),
-	STONE(6, true, "Stone");
+	GRASS(1, 0, true, "Grass"),
+	DIRT(2, 0, true, "Dirt"),
+	SKY(3, 0, false, "Sky"),
+	LAVA(4, 0, true, "Lava"),
+	CLOUD(5, 0, true, "Cloud"),
+	STONE(6, 0, true, "Stone");
 	
 	public static final int TILE_SIZE = 16;
 	private int id;
+	private int angle;
 	private boolean collidable;
 	private String name;
 	private float damage = 0;
 	
-	private TileType(int id, boolean collidable, String name) {
+	private TileType(int id, int angle, boolean collidable, String name) {
 	this.id = id;
+	this.angle = angle;
 	this.collidable = collidable;
 	this.name = name;
 	this.damage = 0;
@@ -30,12 +32,16 @@ public enum TileType {
 	private TileType(int id, boolean collidable, String name, float damage) {
 		this.id = id;
 		this.collidable = collidable;
+		this.angle = 0;
 		this.name = name;
 		this.damage = damage;
 	}
 
 	public int getId() {
 		return id;
+	}
+	public int getAngle() {
+		return this.angle;
 	}
 
 	public boolean isCollidable() {

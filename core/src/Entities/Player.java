@@ -36,9 +36,9 @@ public class Player extends Entity {
 	public void render(SpriteBatch batch) {
 		//image = //insert animator that changes the sprite here
 		Sprite render = new Sprite(image);
-		render.rotate(this.getAngle());
+		render.rotate(this.angle);//In degrees
 		render.setOrigin(0, 0);//This is relative to whatever you put in setBounds()
-		render.setBounds(pos.x,pos.y,this.getWidth(), this.getHeight());
+		render.setBounds(pos.x,pos.y,this.getWidth(), this.getHeight());//This is relative to the screen
 		render.draw(batch);//Holy Fuckles it's Knuckles; the Sprite class is overly complicated
 	}
 
