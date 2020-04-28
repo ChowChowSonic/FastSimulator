@@ -19,7 +19,6 @@ public abstract class Entity {
 	 * pos.Y is believed to be the bottom of the entity.
 	 */
 	protected Vector2 pos;
-	protected EntityType type;
 	
 	/**
 	 * This is a CCDLine, or Constant Collision Detection Line.
@@ -27,6 +26,12 @@ public abstract class Entity {
 	 * even when it's moving so fast that it "Teleports" through/around it 
 	 */
 	protected CCDLine moveline;
+	protected EntityType type;
+	
+	/**
+	 * The map the object is located in
+	 */
+	protected GameMap map;
 	
 	/**
 	 * The real, true determinant of an entity's velocity.
@@ -45,12 +50,8 @@ public abstract class Entity {
 	 * overriding the getXvel() method [NEEDS VERIFICATION] 
 	 */
 	protected float velocityX = 0;
-	
-	/**
-	 * The map the object is located in
-	 */
-	protected GameMap map;
 	protected final int LAYER = 1;
+	protected int angle = 0;
 	protected boolean grounded = false;
 	
 	public void create (EntitySnapshot snapshot, EntityType type, GameMap map) {
@@ -196,6 +197,12 @@ public abstract class Entity {
 	
 	public float getWeight() {
 		return type.getWeight();
+	}
+	public int getAngle() {
+		return this.angle;
+	}
+	public void setAngle(int angle) {
+		this.angle= angle;
 	}
 	
 	@Override

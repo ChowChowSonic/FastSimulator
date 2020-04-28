@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.CCDLine;
 import com.mygdx.game.GameMap;
@@ -13,7 +14,7 @@ public class Player extends Entity {
 	Texture image;
 	SpriteBatch spriteBatch;
 	private static final int FRAME_COLS = 1, FRAME_ROWS = 1;
-	
+
 	protected boolean wasjusthit = false;
 	private float stateTime=0;
 	private float yvelocity = this.velocityY;
@@ -33,12 +34,14 @@ public class Player extends Entity {
 	}
 
 	public void render(SpriteBatch batch) {
-		if(this.velocityX >= 0){
-			batch.draw(image, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-		}else batch.draw(image, this.getX()+this.getWidth(), this.getY(), -this.getWidth(), this.getHeight());;
+		//image = //insert animator that changes the sprite here
+		Sprite render = new Sprite(image);
+		render.rotate(this.getAngle());
+		render.setOrigin(0, 0);//This is relative to whatever you put in setBounds()
+		render.setBounds(pos.x,pos.y,this.getWidth(), this.getHeight());
+		render.draw(batch);//Holy Fuckles it's Knuckles; the Sprite class is overly complicated
 	}
 
-	private boolean runonce = false;
 	public void update(float deltatime, float gravity) {
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
 			this.velocityY += 1.5* JUMP_VEL * getWeight();
@@ -46,35 +49,35 @@ public class Player extends Entity {
 		float screenpixel = 2*Gdx.graphics.getPpcX()/Gdx.graphics.getWidth();
 		if(grounded || this.velocityX == 0) wasjusthit=false;
 		if(!wasjusthit)
-		if (Gdx.input.isKeyPressed(Keys.D)) {
-			if((int)this.velocityX < SPEEDCAP) {
-				this.velocityX+= screenpixel;
-				if(this.velocityX < 0) {
-					this.velocityX++;
+			if (Gdx.input.isKeyPressed(Keys.D)) {
+				if((int)this.velocityX < SPEEDCAP) {
+					this.velocityX+= screenpixel;
+					if(this.velocityX < 0) {
+						this.velocityX++;
+					}
+				}else if(!(this.velocityX <= SPEEDCAP)){
+					this.velocityX = SPEEDCAP;
 				}
-			}else if(!(this.velocityX <= SPEEDCAP)){
-				this.velocityX = SPEEDCAP;
-			}
-		}else if (Gdx.input.isKeyPressed(Keys.A)) {
-			if((int)this.velocityX > -SPEEDCAP) {
-				this.velocityX-=screenpixel;
-				if(this.velocityX > 0) {
-					this.velocityX--;
+			}else if (Gdx.input.isKeyPressed(Keys.A)) {
+				if((int)this.velocityX > -SPEEDCAP) {
+					this.velocityX-=screenpixel;
+					if(this.velocityX > 0) {
+						this.velocityX--;
+					}
+				}else if(!(this.velocityX >= -SPEEDCAP)){
+					this.velocityX = -SPEEDCAP-0.01f;
 				}
-			}else if(!(this.velocityX >= -SPEEDCAP)){
-				this.velocityX = -SPEEDCAP-0.01f;
-			}
-		}else {
-			if(this.velocityX > 1) {
-				if(this.grounded) {
-				this.velocityX-=0.25;
-				}else this.velocityX-=screenpixel;
-			}else if(this.velocityX < -1) {
-				if(this.grounded) {
-					this.velocityX+=0.25;
+			}else {
+				if(this.velocityX > 1) {
+					if(this.grounded) {
+						this.velocityX-=0.25;
+					}else this.velocityX-=screenpixel;
+				}else if(this.velocityX < -1) {
+					if(this.grounded) {
+						this.velocityX+=0.25;
 					}else this.velocityX+=screenpixel;
-			}else if(this.grounded)this.velocityX=0;
-		}
+				}else if(this.grounded)this.velocityX=0;
+			}
 		//System.out.println(this.velocityX);
 		super.update(deltatime, gravity);//Apply gravity
 	}//ends update
