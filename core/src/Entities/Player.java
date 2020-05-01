@@ -8,11 +8,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.CCDLine;
 import com.mygdx.game.GameMap;
+import com.mygdx.game.Sensor;
 
 public class Player extends Entity {
 
 	Texture image;
 	SpriteBatch spriteBatch;
+	Sensor anglesensor;
 	private static final int FRAME_COLS = 1, FRAME_ROWS = 1;
 
 	protected boolean wasjusthit = false;
@@ -31,6 +33,7 @@ public class Player extends Entity {
 		super.create(snapshot, EntityType.PLAYER, world);
 		image = new Texture("SUPER SPONGEBOB.png");
 		this.moveline = new CCDLine(this.getX(), this.getX()+this.velocityX, this.getY(), this.getY()+this.velocityY);
+		anglesensor = new Sensor(this, world);
 	}
 
 	public void render(SpriteBatch batch) {
@@ -43,6 +46,7 @@ public class Player extends Entity {
 	}
 
 	public void update(float deltatime, float gravity) {
+		anglesensor.update();
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
 			this.velocityY += 1.5* JUMP_VEL * getWeight();
 		}

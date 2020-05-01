@@ -225,5 +225,10 @@ public abstract class Entity {
 		}
 		return false;
 	}
+
+	public int getLayer() {
+		// TODO Auto-generated method stub
+		return this.LAYER;
+	}
 	
 }
