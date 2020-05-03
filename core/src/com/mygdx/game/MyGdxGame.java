@@ -42,7 +42,7 @@ public class MyGdxGame extends ApplicationAdapter {
         camera.setToOrtho(false,w,h);
         camera.update();
         
-        gameMap = new TiledGameMap("DemoMap.tmx", "Final Fantasy VII Remake - [ Battle Theme ] Let the Battles Begin (OST).mp3");// Map to be loaded
+        gameMap = new TiledGameMap("smallmap.tmx", "Mio Honda & Crush 40 - Step! x I Am... All Of Me (Mashup).mp3");// Map to be loaded
         //gameMap = new TiledGameMap(); //...Or use a default map
         p=(Player) gameMap.getEntitybyType(new Player());
 	}

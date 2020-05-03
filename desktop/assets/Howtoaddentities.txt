@@ -1,4 +1,0 @@
-How to add a new entity to the game:
-Step 1) in EntityType.java add the following line:
-(Anything in Pointy brackets is a variable)
-<ENTITY_NAME>("<ENTITY_ID>", <ENTITY_WIDTH>, <ENTITY_HEIGHT>, <ENTITY_WEIGHT>)
