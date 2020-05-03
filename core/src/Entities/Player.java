@@ -47,6 +47,7 @@ public class Player extends Entity {
 
 	public void update(float deltatime, float gravity) {
 		anglesensor.update();
+
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
 			this.velocityY += 1.5* JUMP_VEL * getWeight();
 		}

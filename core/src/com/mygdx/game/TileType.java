@@ -14,7 +14,7 @@ public enum TileType {
 	CLOUD(5, 0, true, "Cloud"),
 	STONE(6, 0, true, "Stone");
 	
-	public static final int TILE_SIZE = 16;
+	public static final int TILE_SIZE = 1;
 	private int id;
 	private int angle;
 	private boolean collidable;

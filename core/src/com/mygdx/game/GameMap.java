@@ -17,9 +17,10 @@ import Entities.Spring;
 
 public abstract class GameMap {
 
+	//Second layer. calls here affect all the entities on the map
 	protected ArrayList<Entity> entities; 
-	final int SCREENPILLOWING_X = (int)Math.ceil(0.3*Gdx.graphics.getWidth());//prevents the player from seeing outside the map
-	final int SCREENPILLOWING_Y = 300;//ditto above
+	final int SCREENPILLOWING_X = 0;//(int)Math.ceil(0.3*Gdx.graphics.getWidth());//prevents the player from seeing outside the map
+	final int SCREENPILLOWING_Y = 0;//300;//ditto above
 
 	/**
 	 * Creates a new GameMap class object, and loads in a new array of entities from a file.
@@ -29,7 +30,7 @@ public abstract class GameMap {
 		entities = new ArrayList<Entity>();
 		if(this.getEntitybyType(new Player()) == null) {
 			if(this.getEntitybyType(new Player()) == null) {
-				EntitySnapshot e = new EntitySnapshot(EntityType.PLAYER.getId(), 1435.0f, 420.0f);
+				EntitySnapshot e = new EntitySnapshot(EntityType.PLAYER.getId(), 500.0f, 500.0f);
 				entities.add(new Player(e, this));
 				entities.add(new Spring(e, this));
 				e = new EntitySnapshot(EntityType.ENEMY.getId(), 1300.0f, 420.0f);

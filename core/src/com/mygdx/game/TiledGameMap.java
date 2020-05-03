@@ -15,10 +15,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 public class TiledGameMap extends GameMap{
 
+	//outermost layer. Calls here change everything on hte inner layers as well
 	TiledMap world;
 	CustomOrthRenderer worldRenderer;
 	Music m;
-	Music mloop;
 
 	/**
 	 * Creates a new TiledGameMap object from a file specified by filename.
