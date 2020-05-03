@@ -35,8 +35,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		region = new TextureRegion();
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
         Gdx.graphics.setWindowedMode(screensize.width, screensize.height);
-        float w = Gdx.graphics.getWidth()/1.75f;
-        float h = Gdx.graphics.getHeight()/1.75f;
+        float w = Gdx.graphics.getWidth()/2.2f;
+        float h = Gdx.graphics.getHeight()/2.2f;
         
         camera = new OrthographicCamera();
         camera.setToOrtho(false,w,h);
@@ -61,6 +61,7 @@ public class MyGdxGame extends ApplicationAdapter {
         gameMap.update(deltatime);
         camera.update();//Translate BEFORE Update. Always. 
         gameMap.render(camera, batch);
+        System.out.println(Gdx.graphics.getFramesPerSecond());
 	}
 	
 	@Override

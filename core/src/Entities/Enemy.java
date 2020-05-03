@@ -31,16 +31,16 @@ public class Enemy extends Entity{
 
 	public void update(float deltatime, float gravity) {
 		if(p.touches(this) && Math.sqrt(Math.pow(p.getXvel(), 2)+Math.pow(p.getYvel(), 2)) >5) {
-			p.setYvel(10*p.getWeight());
+			p.velocityY = (10*p.getWeight());
 			world.destroy(this);
 		}else if(p.touches(this)) {
 			p.wasjusthit = true;
 			if(p.getX() >= this.getX()) {
-				p.setXvel(5);
-				p.setYvel(p.getWeight()*5);
+				p.velocityX = (5);
+				p.velocityY = (p.getWeight()*5);
 			}else {
-				p.setXvel(-5);
-				p.setYvel(p.getWeight()*5);
+				p.velocityX = (-5);
+				p.velocityY = (p.getWeight()*5);
 			}
 		}
 		

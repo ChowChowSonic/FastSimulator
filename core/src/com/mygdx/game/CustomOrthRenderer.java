@@ -67,28 +67,31 @@ public class CustomOrthRenderer extends BatchTiledMapRenderer {
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
 		final Color batchColor = batch.getColor();
-		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
+		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a);
 
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
 
-		final float layerTileWidth = layer.getTileWidth() * unitScale;
-		final float layerTileHeight = layer.getTileHeight() * unitScale;
+		final float layerTileWidth = layer.getTileWidth();
+		final float layerTileHeight = layer.getTileHeight();
 
-		final float layerOffsetX = layer.getRenderOffsetX() * unitScale;
+		//I dont think we need these...?
+		//final float layerOffsetX = 0;//layer.getRenderOffsetX() * unitScale;
 		// offset in tiled is y down, so we flip it
-		final float layerOffsetY = -layer.getRenderOffsetY() * unitScale;
+		//final float layerOffsetY = 0;//-layer.getRenderOffsetY() * unitScale;
 
-		final int col1 = Math.max(0, (int)((viewBounds.x - layerOffsetX) / layerTileWidth));
+		//how much of the game is rendered. I.E. it renders a box shape with a
+		//lower left corner at (col1, row1) and a upper right corner at (col2, row2)
+		final int col1 = Math.max(0, (int)((viewBounds.x) / layerTileWidth));
 		final int col2 = Math.min(layerWidth,
-			(int)((viewBounds.x + viewBounds.width + layerTileWidth - layerOffsetX) / layerTileWidth));
+				(int)((viewBounds.x + viewBounds.width + layerTileWidth) / layerTileWidth));
 
-		final int row1 = Math.max(0, (int)((viewBounds.y - layerOffsetY) / layerTileHeight));
+		final int row1 = Math.max(0, (int)((viewBounds.y) / layerTileHeight));
 		final int row2 = Math.min(layerHeight,
-			(int)((viewBounds.y + viewBounds.height + layerTileHeight - layerOffsetY) / layerTileHeight));
+				(int)((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight));
 
-		float y = row2 * layerTileHeight + layerOffsetY;
-		float xStart = col1 * layerTileWidth + layerOffsetX;
+		float y = row2 * layerTileHeight;
+		float xStart = col1 * layerTileWidth;
 		final float[] vertices = this.vertices;
 
 		for (int row = row2; row >= row1; row--) {
@@ -102,12 +105,13 @@ public class CustomOrthRenderer extends BatchTiledMapRenderer {
 				final TiledMapTile tile = cell.getTile();
 
 				if (tile != null) {
+					TextureRegion region = tile.getTextureRegion();
+					//fixBleeding(region);
+
 					final boolean flipX = cell.getFlipHorizontally();
 					final boolean flipY = cell.getFlipVertically();
 					final int rotations = cell.getRotation();
 
-					TextureRegion region = tile.getTextureRegion();
-					fixBleeding(region);
 
 					float x1 = x + tile.getOffsetX() * unitScale;
 					float y1 = y + tile.getOffsetY() * unitScale;
@@ -150,7 +154,7 @@ public class CustomOrthRenderer extends BatchTiledMapRenderer {
 						temp = vertices[U2];
 						vertices[U2] = vertices[U4];
 						vertices[U4] = temp;
-					}
+						}
 					if (flipY) {
 						float temp = vertices[V1];
 						vertices[V1] = vertices[V3];
@@ -158,7 +162,7 @@ public class CustomOrthRenderer extends BatchTiledMapRenderer {
 						temp = vertices[V2];
 						vertices[V2] = vertices[V4];
 						vertices[V4] = temp;
-					}
+						}
 					if (rotations != 0) {
 						switch (rotations) {
 						case Cell.ROTATE_90: {
@@ -213,16 +217,16 @@ public class CustomOrthRenderer extends BatchTiledMapRenderer {
 			y -= layerTileHeight;
 		}
 	}
-	
+
 	public static void fixBleeding(TextureRegion region) {
-        float fix = 0.01f;
-        float x = region.getRegionX();
-        float y = region.getRegionY();
-        float width = region.getRegionWidth();
-        float height = region.getRegionHeight();
-        float invTexWidth = 1f / region.getTexture().getWidth();
-        float invTexHeight = 1f / region.getTexture().getHeight();
-        region.setRegion((x + fix) * invTexWidth, (y + fix) * invTexHeight, (x + width - fix) * invTexWidth, (y + height - fix) * invTexHeight); // Trims Region
-    }
-	
+		float fix = 0.01f;
+		float x = region.getRegionX();
+		float y = region.getRegionY();
+		float width = region.getRegionWidth();
+		float height = region.getRegionHeight();
+		float invTexWidth = 1f / region.getTexture().getWidth();
+		float invTexHeight = 1f / region.getTexture().getHeight();
+		region.setRegion((x + fix) * invTexWidth, (y + fix) * invTexHeight, (x + width - fix) * invTexWidth, (y + height - fix) * invTexHeight); // Trims Region
+	}
+
 }

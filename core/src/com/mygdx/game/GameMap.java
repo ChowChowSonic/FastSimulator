@@ -30,7 +30,7 @@ public abstract class GameMap {
 		entities = new ArrayList<Entity>();
 		if(this.getEntitybyType(new Player()) == null) {
 			if(this.getEntitybyType(new Player()) == null) {
-				EntitySnapshot e = new EntitySnapshot(EntityType.PLAYER.getId(), 500.0f, 500.0f);
+				EntitySnapshot e = new EntitySnapshot(EntityType.PLAYER.getId(), 250, 250);
 				entities.add(new Player(e, this));
 				entities.add(new Spring(e, this));
 				e = new EntitySnapshot(EntityType.ENEMY.getId(), 1300.0f, 420.0f);
