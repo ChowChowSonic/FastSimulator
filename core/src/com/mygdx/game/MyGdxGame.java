@@ -54,15 +54,17 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
-        if(p !=null) {
-       camera.position.x = p.getX();
-       camera.position.y = p.getY();
-        }
-        gameMap.update(deltatime);
+camera.translate((p.getX()-camera.position.x)/2, (p.getY()-camera.position.y)/2);
         camera.update();//Translate BEFORE Update. Always. 
+        gameMap.update(deltatime);
         gameMap.render(camera, batch);
-        System.out.println(Gdx.graphics.getFramesPerSecond());
-	}
+        
+        //Debug and preformance stuff
+        int FPS = Gdx.graphics.getFramesPerSecond();
+        if(FPS < 60) {
+        System.out.println(FPS);
+        }
+        }
 	
 	@Override
 	public void dispose () {

@@ -36,10 +36,10 @@ public class Enemy extends Entity{
 		}else if(p.touches(this)) {
 			p.wasjusthit = true;
 			if(p.getX() >= this.getX()) {
-				p.velocityX = (5);
+				p.velocityG = (5);
 				p.velocityY = (p.getWeight()*5);
 			}else {
-				p.velocityX = (-5);
+				p.velocityG = (-5);
 				p.velocityY = (p.getWeight()*5);
 			}
 		}

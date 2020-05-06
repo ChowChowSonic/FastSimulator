@@ -39,45 +39,58 @@ public class Player extends Entity {
 	public void render(SpriteBatch batch) {
 		//image = //insert animator that changes the sprite here
 		Sprite render = new Sprite(image);
-		render.rotate(0);//anglesensor.updateangle());//In degrees
-		render.setOrigin(0, 0);//This is relative to whatever you put in setBounds()
+		render.rotate(angle);//anglesensor.updateangle());//In degrees
+		render.setOrigin(this.getWidth()/2, this.getHeight()/2);//This is relative to whatever you put in setBounds()
 		render.setBounds(pos.x,pos.y,this.getWidth(), this.getHeight());//This is relative to the screen
 		render.draw(batch);//Holy Fuckles it's Knuckles; the Sprite class is overly complicated
 	}
 
 	public void update(float deltatime, float gravity) {
+		anglesensor.updateangle();
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
 			this.velocityY += 1.5* JUMP_VEL * getWeight();
 		}
 		float screenpixel = 2*Gdx.graphics.getPpcX()/Gdx.graphics.getWidth();
 		if(grounded || this.velocityX == 0) wasjusthit=false;
-		
-		
-	//	this.velocityX += (float) (this.velocityG*Math.cos(Math.PI*this.angle/180));
-	//	this.velocityY += (float) (this.velocityG*-Math.sin(Math.PI*this.angle/180));
-		
-		
+
+
+		this.velocityX += (float) (this.velocityG*Math.cos(Math.PI*this.angle/180));
+		//	this.velocityY += (float) (this.velocityG*-Math.sin(Math.PI*this.angle/180));
+
+
 		if(!wasjusthit)
 			if (Gdx.input.isKeyPressed(Keys.D)) {
 				if((int)this.velocityX < SPEEDCAP) {
 					this.velocityG+= screenpixel;
 					if(this.velocityG < 0) {
 						this.velocityG++;
+
+					}else if(this.velocityG == 0) {
+						if(this.angle < 10) {
+							this.velocityG = 2;
+						}else {
+							this.velocityG = 0;
+						}
+					}else if(!(this.velocityG <= SPEEDCAP)){
+						this.velocityG = SPEEDCAP;
 					}
-				}else if(!(this.velocityG <= SPEEDCAP)){
-					this.velocityG = SPEEDCAP;
-				}
-				this.velocityX = (float) (this.velocityG*Math.cos(Math.PI*this.angle/180));
-			}else if (Gdx.input.isKeyPressed(Keys.A)) {
-				if((int)this.velocityG > -SPEEDCAP) {
-					this.velocityG-=screenpixel;
-					if(this.velocityG > 0) {
-						this.velocityG--;
+					this.velocityX = (float) (this.velocityG*Math.cos(Math.PI*this.angle/180));
+				}else if (Gdx.input.isKeyPressed(Keys.A)) {
+					if((int)this.velocityG > -SPEEDCAP) {
+						this.velocityG-=screenpixel;
+						if(this.velocityG > 0) {
+							this.velocityG--;
+						}else if(this.velocityG == 0) {
+							if(this.angle < 10) {
+								this.velocityG = -2;
+							}else {
+								this.velocityG = 0;
+							}
+						}
 					}
 				}else if(!(this.velocityG >= -SPEEDCAP)){
-					this.velocityG = -SPEEDCAP-0.01f;
+					this.velocityG = -SPEEDCAP;
 				}
-				this.velocityX = (float) (this.velocityG*Math.cos(Math.PI*this.angle/180));
 			}else {
 				if(this.velocityG > 1) {
 					if(this.grounded) {
@@ -94,9 +107,9 @@ public class Player extends Entity {
 				}else if(this.grounded) {
 					this.velocityG=0;
 				}
-				this.velocityX = (float) (this.velocityG*Math.cos(Math.PI*this.angle/180));
 			}
 		//System.out.println(this.velocityX);
+		this.velocityX = (float) (this.velocityG*Math.cos(Math.PI*this.angle/180));
 		super.update(deltatime, gravity);//Apply gravity
 	}//ends update
 

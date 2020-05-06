@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
@@ -35,12 +36,15 @@ public abstract class Entity {
 	protected GameMap map;
 
 	/**
-	 * The "Ground Velocity" of the entity. Change this to anything other than zero
-	 * to make the entity move with respect to sin/cos functions. 
-	 * This is useful if you're applying an angle to it
+	 * The "Ground Velocity" of the entity. It's functionally identical to velocityX,
+	 * but it follows sin() and cos() rules. Useful if you have to apply an angle to velocities as well.
 	 */
 	protected float velocityG = 0;
 	protected float velocityY = 0;
+	
+	/**
+	 * This is the standard X velocity. Use this if you dont care for sin and cos functions
+	 */
 	protected float velocityX = 0;
 	protected final int LAYER = 1;
 	protected int angle = 0;
@@ -53,27 +57,53 @@ public abstract class Entity {
 	}
 
 	public void update (float deltaTime, float gravity) {
-		
-		//Was at one point in the (now removed) MoveX() method
+
+		//Drived from the (now removed) MoveX() method
 		float newX = (float) Math.floor(pos.x + this.velocityX);
 		if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight(), LAYER)) {
 			this.pos.x = newX;
 		}else {
-			for(int i =0; i < this.velocityX; i++) {
+			//Substepping loop to prevent collisions with air
+			for(int i =(int) this.velocityX; i > 0; i--) {
 				newX = pos.x+i;
-				if (!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight(), LAYER)) {
-					this.pos.x = newX;
+				if(!map.RectCollidesWithMap(newX, pos.y, getWidth(), getHeight(), LAYER)) {
+					pos.x = newX;
 					break;
 				}
 			}
-			this.velocityG=0;
+			
+			//Loop to make the player step over pixels instead of ramming into them and stopping
+			boolean hitawall = true;
+			int climbingheight = (int) (this.getHeight()+velocityG*Math.sin(angle)*MathUtils.degreesToRadians);
+			for(int i = 0; i < climbingheight;i++) {
+				if(velocityX < 0) {
+					if(!map.RectCollidesWithMap(newX-1, pos.y+i, getWidth(), getHeight(), LAYER)) {
+						pos.y += i;//move the player on top of the block
+						if(Math.abs(velocityG) > 2) velocityG+=0.25;//Slow the player down to simulate gravity resisting them
+						else velocityG = 0;//stop the player if they slow down too much
+						hitawall = false;//Tell the game not to stop the player
+						break;
+					}
+				}else if(velocityX > 0){
+					//comments are the same thing in the opposite direction
+					if(!map.RectCollidesWithMap(newX+1, pos.y+i, getWidth(), getHeight(), LAYER)) {
+						pos.y += i;
+						pos.x++;
+						if(Math.abs(velocityG) > 1) velocityG-=0.25;
+						else velocityG = 0;
+						hitawall = false;
+						break;
+					}
+				}
+			}
+			if(hitawall) {
+				this.velocityG=0;
+			}
 		}
 		//end of moveX()
 
 		//This half is responsible for the movement in the Y
-		if(!this.isGrounded()) {
 			this.velocityY += (gravity * deltaTime * this.getWeight());
-			}
 		int newY = (int) (pos.y+(this.velocityY * deltaTime));
 		if (map.RectCollidesWithMap(pos.x, newY, getWidth(), getHeight(), LAYER)) {
 			if (velocityY < 0) {
@@ -161,7 +191,7 @@ public abstract class Entity {
 	public void setY (int i) {
 		this.pos.y = i;
 	}
-	
+
 	//Get the velocity
 	public float getYvel() {
 		return this.velocityY;
@@ -172,7 +202,7 @@ public abstract class Entity {
 	public float getGvel() {
 		return this.velocityG;
 	}
-	
+
 	public void setGvel(float gvel) {
 		this.velocityG = gvel;
 	}
