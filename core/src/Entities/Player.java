@@ -64,7 +64,6 @@ public class Player extends Entity {
 					this.velocityG+= screenpixel;
 					if(this.velocityG < 0) {
 						this.velocityG++;
-
 					}else if(this.velocityG == 0) {
 						if(this.angle < 10) {
 							this.velocityG = 2;
@@ -73,8 +72,8 @@ public class Player extends Entity {
 						}
 					}else if(!(this.velocityG <= SPEEDCAP)){
 						this.velocityG = SPEEDCAP;
-					}
-					this.velocityX = (float) (this.velocityG*Math.cos(Math.PI*this.angle/180));
+					}				
+				}
 				}else if (Gdx.input.isKeyPressed(Keys.A)) {
 					if((int)this.velocityG > -SPEEDCAP) {
 						this.velocityG-=screenpixel;
@@ -87,7 +86,6 @@ public class Player extends Entity {
 								this.velocityG = 0;
 							}
 						}
-					}
 				}else if(!(this.velocityG >= -SPEEDCAP)){
 					this.velocityG = -SPEEDCAP;
 				}

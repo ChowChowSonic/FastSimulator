@@ -17,7 +17,7 @@ public class Sensor {
 		float dx = root.getWidth();
 		TileType tile = world.getTileTypeByLocation(layer, x+dx, y);
 
-		root.setAngle(50);
+		root.setAngle(0);
 	}//ends method 
 
 }

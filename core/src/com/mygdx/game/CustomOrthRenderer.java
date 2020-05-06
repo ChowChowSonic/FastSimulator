@@ -106,7 +106,7 @@ public class CustomOrthRenderer extends BatchTiledMapRenderer {
 
 				if (tile != null) {
 					TextureRegion region = tile.getTextureRegion();
-					//fixBleeding(region);
+					fixBleeding(region);
 
 					final boolean flipX = cell.getFlipHorizontally();
 					final boolean flipY = cell.getFlipVertically();
