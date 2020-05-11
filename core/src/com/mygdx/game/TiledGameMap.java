@@ -33,7 +33,7 @@ public class TiledGameMap extends GameMap{
 		//music stuff
 		m = Gdx.audio.newMusic(Gdx.files.internal(musicFileName));
 		m.setLooping(false);
-		m.play();
+		//m.play();
 		m.setOnCompletionListener(new Music.OnCompletionListener() {
 		    @Override
 		    public void onCompletion(Music aMusic) {  

@@ -33,7 +33,7 @@ public class Player extends Entity {
 		super.create(snapshot, EntityType.PLAYER, world);
 		image = new Texture("SUPER SPONGEBOB.png");
 		this.moveline = new CCDLine(this.getX(), this.getX()+this.velocityX, this.getY(), this.getY()+this.velocityY);
-		anglesensor = new Sensor(this, world);
+		anglesensor = new Sensor(this.pos.x, this.pos.y, this.getWidth(), this.getHeight(), world);
 	}
 
 	public void render(SpriteBatch batch) {
@@ -46,7 +46,7 @@ public class Player extends Entity {
 	}
 
 	public void update(float deltatime, float gravity) {
-		anglesensor.updateangle();
+		angle = (int) anglesensor.updateangle();
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
 			this.velocityY += 1.5* JUMP_VEL * getWeight();
 		}

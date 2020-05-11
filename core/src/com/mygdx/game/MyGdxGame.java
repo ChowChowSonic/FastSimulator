@@ -39,7 +39,7 @@ public class MyGdxGame extends ApplicationAdapter {
         float h = Gdx.graphics.getHeight()/2.2f;
         
         camera = new OrthographicCamera();
-        camera.setToOrtho(false,320*1.3f,224*1.3f);
+        camera.setToOrtho(false,320*1.5f,224*1.5f);
         camera.update();
         
         gameMap = new TiledGameMap("smallmap.tmx", "Mio Honda & Crush 40 - Step! x I Am... All Of Me (Mashup).mp3");// Map to be loaded
@@ -61,9 +61,9 @@ camera.translate((p.getX()-camera.position.x)/2, (p.getY()-camera.position.y)/2)
         
         //Debug and preformance stuff
         int FPS = Gdx.graphics.getFramesPerSecond();
-        if(FPS < 60) {
-        System.out.println(FPS);
-        }
+        //if(FPS < 60) {
+        //System.out.println(FPS);
+        //}
         }
 	
 	@Override

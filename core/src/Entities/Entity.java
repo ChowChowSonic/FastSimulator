@@ -41,7 +41,7 @@ public abstract class Entity {
 	 */
 	protected float velocityG = 0;
 	protected float velocityY = 0;
-	
+
 	/**
 	 * This is the standard X velocity. Use this if you dont care for sin and cos functions
 	 */
@@ -71,38 +71,43 @@ public abstract class Entity {
 					break;
 				}
 			}
-			
+
 			//Loop to make the player step over pixels instead of ramming into them and stopping
 			boolean hitawall = true;
-			int climbingheight = (int) (this.getHeight()+velocityG*Math.sin(angle)*MathUtils.degreesToRadians);
-			for(int i = 0; i < climbingheight;i++) {
+			int climbingheight = (int) (this.getHeight()+(velocityG*-Math.sin(angle)*MathUtils.degreesToRadians));
+			for(int i = 0; i < climbingheight; i++) {
+				
 				if(velocityX < 0) {
 					if(!map.RectCollidesWithMap(newX-1, pos.y+i, getWidth(), getHeight(), LAYER)) {
-						pos.y += i;//move the player on top of the block
-						if(Math.abs(velocityG) > 2) velocityG+=0.25;//Slow the player down to simulate gravity resisting them
-						else velocityG = 0;//stop the player if they slow down too much
-						hitawall = false;//Tell the game not to stop the player
+						if(Math.abs(velocityG) > 2) {
+							//pos.y += i;//move the player on top of the block
+							velocityG+=0.1;//Slow the player down to simulate gravity resisting them
+							velocityY+=-gravity*this.getWeight()*deltaTime*2;//(float) (this.getWeight());//*Math.sin(angle*MathUtils.degreesToRadians));
+							hitawall = false;//Tell the game not to stop the player
+						}
 						break;
 					}
 				}else if(velocityX > 0){
-					//comments are the same thing in the opposite direction
+					//this is the same thing in the opposite direction
 					if(!map.RectCollidesWithMap(newX+1, pos.y+i, getWidth(), getHeight(), LAYER)) {
-						pos.y += i;
-						pos.x++;
-						if(Math.abs(velocityG) > 1) velocityG-=0.25;
-						else velocityG = 0;
-						hitawall = false;
+						if(Math.abs(velocityG) > 2) {
+							//pos.y += i;
+							velocityG-=0.1;
+							velocityY+=-gravity*this.getWeight()*deltaTime*2;//(float) (this.getWeight());//*Math.sin(angle*MathUtils.degreesToRadians));
+							hitawall = false;
+						}
 						break;
 					}
 				}
 			}
 			if(hitawall) {
-				this.velocityG=0;
+				this.velocityG=0.5f;
 			}
 		}
 		//end of moveX()
 
 		//This half is responsible for the movement in the Y
+		if(!this.isGrounded())
 			this.velocityY += (gravity * deltaTime * this.getWeight());
 		int newY = (int) (pos.y+(this.velocityY * deltaTime));
 		if (map.RectCollidesWithMap(pos.x, newY, getWidth(), getHeight(), LAYER)) {
