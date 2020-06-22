@@ -25,21 +25,19 @@ public class Sensor {
 			if(tile != null && tile.isCollidable()) {
 				dy+= i;
 				//System.out.println(i);
-				break;
-			}
+			}else break;
 		}
 		
-		//check tiles beneath the entity's "front" (far right) which is x + width
+		/*//check tiles beneath the entity's "front" (far right) which is X + width
 		for (int i = width; i > -width; i--) {
 			TileType tile = world.getTileTypeByLocation(1, x+width+1, y+i);
 			if(tile != null && tile.isCollidable()) {
 				dy+= i;
 				//System.out.println(i);
-				break;
-			}
-		}
+			}else break;
+		}*/
 		float angle = (float) (Math.atan(((float)dy)/dx)*MathUtils.radiansToDegrees);
-		System.out.println(dy +" " + dx);
+		//System.out.println(dy +" " + dx);
 		
 		return angle;
 	}//ends method 
