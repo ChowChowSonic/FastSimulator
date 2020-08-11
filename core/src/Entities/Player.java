@@ -12,10 +12,7 @@ public class Player extends Entity {
 
 	Texture image;
 	SpriteBatch spriteBatch;
-	private static final int FRAME_COLS = 1, FRAME_ROWS = 1;
-	
 	protected boolean wasjusthit = false;
-	private float stateTime=0;
 	private float yvelocity = this.velocityY;
 	/**
 	 * The horizontal speed cap for the player: They
@@ -38,7 +35,6 @@ public class Player extends Entity {
 		}else batch.draw(image, this.getX()+this.getWidth(), this.getY(), -this.getWidth(), this.getHeight());;
 	}
 
-	private boolean runonce = false;
 	public void update(float deltatime, float gravity) {
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
 			this.velocityY += 1.5* JUMP_VEL * getWeight();

@@ -29,20 +29,24 @@ public class TiledGameMap extends GameMap{
 	public TiledGameMap(String mapFileName, String musicFileName) {
 		world = new TmxMapLoader().load(mapFileName);
 		worldRenderer = new CustomOrthRenderer(world);
-		
+
 		//music stuff
+		try {
 		m = Gdx.audio.newMusic(Gdx.files.internal(musicFileName));
 		m.setLooping(false);
 		m.play();
 		m.setOnCompletionListener(new Music.OnCompletionListener() {
-		    @Override
-		    public void onCompletion(Music aMusic) {  
-		       aMusic.setPosition(200);
-		       aMusic.play();
-		    }
+			@Override
+			public void onCompletion(Music aMusic) {  
+				aMusic.setPosition(200);
+				aMusic.play();
+			}
 		});
+		}catch(Exception e) {
+			System.out.println("Error loading music");
+		}
 	}
-	
+
 	/**
 	 * Loads a default map from the assets directory. Will always load
 	 * a file named "map.tmx"
@@ -75,16 +79,38 @@ public class TiledGameMap extends GameMap{
 
 	public TileType getTileTypeByLocation(int layer, int col, int row) {
 		Cell cell = ((TiledMapTileLayer) world.getLayers().get(layer)).getCell(col, row);
-		
+
 		if (cell != null) {
 			TiledMapTile tile = cell.getTile();
-			
+
 			if (tile != null) {
 				int id = tile.getId();
 				return TileType.getTileTypeByID(id);
 			}
 		}
 		return null;
+	}
+	/**
+	 * Returns a set of ints representing an (x,y) coordinate point that will be suitable for spawning a player
+	 * the first int in the list will be the X position (that is, int[0]). While the second (int[1]) will be the Y
+	 */
+	public int[] getPlayerSpawnPoint() {
+		int[] position = {0,0};
+		for(int x = 0; x < this.getWidth(); x++) {
+			for(int y = 0; y < this.getHeight(); y++) {
+				TileType toptile = this.getTileTypeByLocation(1, x, y+1);
+				TileType bottile = this.getTileTypeByLocation(1, x, y);
+				if((toptile != null && bottile != null)) {
+					if((!toptile.isCollidable() && !bottile.isCollidable())) {
+						position[0]=x*TileType.TILE_SIZE;
+						position[1]=y*TileType.TILE_SIZE;
+						return position;
+					}
+				}
+			}
+		}
+
+		return position;
 	}
 
 	@Override
@@ -101,5 +127,5 @@ public class TiledGameMap extends GameMap{
 	public int getLayers() {
 		return world.getLayers().getCount();
 	}
-	
+
 }

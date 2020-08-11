@@ -18,9 +18,7 @@ import Entities.Spring;
 public abstract class GameMap {
 
 	protected ArrayList<Entity> entities; 
-	final int SCREENPILLOWING_X = (int)Math.ceil(0.3*Gdx.graphics.getWidth());//prevents the player from seeing outside the map
-	final int SCREENPILLOWING_Y = 300;//ditto above
-
+	
 	/**
 	 * Creates a new GameMap class object, and loads in a new array of entities from a file.
 	 * File directory is determined by EntityLoader.loadEntities();
@@ -91,8 +89,8 @@ public abstract class GameMap {
 	public abstract int getLayers();
 
 	public boolean RectCollidesWithMap(float x, float y, int width, int height, int layer) {
-		boolean isoutofbounds = (x-SCREENPILLOWING_X) < 0 || (y - SCREENPILLOWING_Y) < 0 || 
-				x + width + SCREENPILLOWING_X > getPixelWidth() || (y + height + SCREENPILLOWING_Y > getPixelHeight());
+		boolean isoutofbounds = (x) < 0 || (y) < 0 || 
+				x + width > getPixelWidth() || (y + height > getPixelHeight());
 				if(isoutofbounds) return true;
 
 				for (int row = (int) (y/TileType.TILE_SIZE); row < Math.ceil((y+height)/TileType.TILE_SIZE); row++) {
