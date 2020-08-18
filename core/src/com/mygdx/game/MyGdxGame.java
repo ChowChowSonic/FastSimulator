@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -34,43 +35,44 @@ public class MyGdxGame extends ApplicationAdapter {
 	float deltaX, deltaY;
 	float w;
 	float h;
+	boolean maploaded = false;
+	ArrayList<CustomButton> buttons = new ArrayList<CustomButton>();
 	public enum gamestate{menu, level, hub};
 	gamestate currentstate = gamestate.menu;
 
 	@Override
 	public void create () {
-		//menu state
-		if(currentstate == gamestate.menu) {
-			
-		}
+		batch = new SpriteBatch();
+		region = new TextureRegion();
+		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+		Gdx.graphics.setWindowedMode(screensize.width, screensize.height);
 
-		//game state
-		if(currentstate == gamestate.level) {
-			batch = new SpriteBatch();
-			region = new TextureRegion();
-			Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-			Gdx.graphics.setWindowedMode(screensize.width, screensize.height);
-
-			camera = new OrthographicCamera();
-			w = Gdx.graphics.getWidth()/1.75f;
-			h = Gdx.graphics.getHeight()/1.75f;
-			camera.setToOrtho(false,w,h);
-			camera.update();
-
-			gameMap = new TiledGameMap("Practicemap.tmx", "aFinal Fantasy VII Remake - [ Battle Theme ] Let the Battles Begin (OST).mp3");// Map to be loaded
-			//gameMap = new TiledGameMap(); //...Or use a default map
-			p=(Player) gameMap.getEntitybyType(new Player());
-			int[] spawnpoint = gameMap.getPlayerSpawnPoint();
-			p.setX(spawnpoint[0]);
-			p.setY(spawnpoint[1]);
-		}
+		camera = new OrthographicCamera();
+		w = Gdx.graphics.getWidth()/1.75f;
+		h = Gdx.graphics.getHeight()/1.75f;
+		camera.setToOrtho(false,w,h);
+		camera.update();
+		CustomButton button = new CustomButton(screensize.width/3, 500, 500, 200, "PlayEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+		buttons.add(button);
+		button = new CustomButton(screensize.width/3, 300, 500, 200, "Options");
+		buttons.add(button);
+		button = new CustomButton(screensize.width/3, 100, 500, 200, "Exit");
+		buttons.add(button);
 	}
 
 	@Override
 	public void render () {
-
+		if(currentstate == gamestate.menu) {
+			Gdx.gl.glClearColor( 0, 0, 0, 0 );//clears the background
+			  Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );//clears the depth buffer bit
+			  	//...Dont ask me what that is all I know is that these two lines of code stop everything from flickering.
+			for(CustomButton b : buttons) { 
+				if(b!= null)b.draw();
+			}
+		}
 		//game state
-		if(currentstate == gamestate.level) {
+		else if(currentstate == gamestate.level) {
+			if(!maploaded) loadmap();
 			float deltatime = Gdx.graphics.getDeltaTime();
 			Gdx.gl.glClearColor(49/255.0f, 162.0f/255, 242.0f/255, 100);
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -95,6 +97,33 @@ public class MyGdxGame extends ApplicationAdapter {
 			camera.update();//Translate BEFORE Update. Always. 
 			gameMap.render(camera, batch);
 		}
+	}
+	private void loadmap() {
+		gameMap = new TiledGameMap("ExterminationDemo.tmx", "aFinal Fantasy VII Remake - [ Battle Theme ] Let the Battles Begin (OST).mp3");// Map to be loaded
+		//gameMap = new TiledGameMap(); //...Or use a default map
+		p=(Player) gameMap.getEntitybyType(new Player());
+		int[] spawnpoint = gameMap.getPlayerSpawnPoint();
+		p.setX(spawnpoint[0]);
+		p.setY(spawnpoint[1]);
+		maploaded = true;
+	}
+	/**
+	 * Extracts the player from the mission, cues the mission successful/fail theme, then displays the mission summary menu.
+	 * 
+	 * Then it unloads the map and returns the player to the hub
+	 */
+	private void extract() {
+		//extract from the mission
+		//gotta add this later...
+
+		//unload the map
+		gameMap = null; 
+		maploaded = false;
+		System.gc();
+		currentstate = gamestate.hub;
+
+		//return to the hub
+		//gotta add this later...
 	}
 
 	@Override

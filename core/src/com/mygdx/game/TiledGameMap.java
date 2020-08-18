@@ -112,7 +112,31 @@ public class TiledGameMap extends GameMap{
 
 		return position;
 	}
+	
+	/**
+	 * Returns a set of ints representing an (x,y) coordinate point that will be suitable for spawning a player.
+	 * The first int in the list will be the X position (that is, int[0]). While the second (int[1]) will be the Y.
+	 * 
+	 * The spawnpoint will always be within a box with its corners at x1, y1, x2 and y2 OR at (0,0) if no spawnpoint is found suitable
+	 */
+	public int[] getPlayerSpawnPoint(int x1, int y1, int x2, int y2) {
+		int[] position = {0,0};
+		for(int x = x1; x < x2; x++) {
+			for(int y = y1; y < y2; y++) {
+				TileType toptile = this.getTileTypeByLocation(1, x, y+1);
+				TileType bottile = this.getTileTypeByLocation(1, x, y);
+				if((toptile != null && bottile != null)) {
+					if((!toptile.isCollidable() && !bottile.isCollidable())) {
+						position[0]=x*TileType.TILE_SIZE;
+						position[1]=y*TileType.TILE_SIZE;
+						return position;
+					}
+				}
+			}
+		}
 
+		return position;
+	}
 	@Override
 	public int getWidth () {
 		return ((TiledMapTileLayer) world.getLayers().get(0)).getWidth();
