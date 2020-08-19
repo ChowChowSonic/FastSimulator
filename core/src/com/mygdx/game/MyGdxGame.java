@@ -36,7 +36,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private double loadtime;
 	private boolean maploaded = false;
 	public enum gamestate{menu, level, hub};
-	public gamestate currentstate = gamestate.level;
+	public gamestate currentstate = gamestate.menu;
 
 	@Override
 	public void create () {
@@ -57,11 +57,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		QueuedButton.addListener(new InputListener() {
 			@Override
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				currentstate = gamestate.hub;
 			}
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				currentstate = gamestate.hub;
+				maploaded = false;
 				return true;
 			}
 		});
@@ -86,12 +86,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		ExitButton.addListener(new InputListener() {
 			@Override
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("Worked");
 			}
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				dispose();
 				System.exit(0);
+				System.gc();
 				return true;
 			}
 		});
@@ -113,8 +113,35 @@ public class MyGdxGame extends ApplicationAdapter {
 			menu.draw();
 		}
 		
+		else if(currentstate == gamestate.hub) {
+			if(!maploaded)loadhub();
+			float deltatime = Gdx.graphics.getDeltaTime();
+			Gdx.gl.glClearColor(49/255.0f, 162.0f/255, 242.0f/255, 100);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			if(p !=null) {
+				camera.position.x = p.getX();
+				camera.position.y = p.getY();
+
+				//clamp the camera so it doesn't go out of bounds
+				if(camera.position.x - w/2 < 0) {
+					camera.position.x += Math.abs(camera.position.x - w/2);
+				}else if(camera.position.x + w/2 > gameMap.getWidth()*TileType.TILE_SIZE) {
+					camera.position.x -= Math.abs(camera.position.x + w/2 - gameMap.getWidth()*TileType.TILE_SIZE);
+				}
+				if(camera.position.y - h/2 < 0) {
+					camera.position.y += Math.abs(camera.position.y - h/2);
+				}else if(camera.position.y + h/2 > gameMap.getHeight()*TileType.TILE_SIZE) {
+					camera.position.y -= Math.abs(camera.position.y + h/2 - gameMap.getHeight()*TileType.TILE_SIZE);
+				}
+		}
+			gameMap.update(deltatime);
+			camera.update();//Translate BEFORE Update. Always. 
+			gameMap.render(camera, batch);
+		}
+		
 		else if(currentstate == gamestate.level) {
-			if(!maploaded) loadmap("ExterminationDemo.tmx");
+			if(!maploaded) loadmap("exterminationDemo.tmx");
 			float deltatime = Gdx.graphics.getDeltaTime();
 			Gdx.gl.glClearColor(49/255.0f, 162.0f/255, 242.0f/255, 100);
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -142,10 +169,11 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 	private void loadmap(String mapname) {
 		try {
-			gameMap = new TiledGameMap(mapname, "Final Fantasy VII Remake - "
-					+ " Battle Theme ] Let the Battles Begin (OST).mp3", 1);// Map to be loaded
-			//gameMap = new TiledGameMap(); //...Or use a default map
+			maploaded = false;
+			gameMap = new TiledGameMap(mapname, 1);// Map to be loaded
 			p=(Player) gameMap.getEntitybyType(new Player());
+			p.setLayer(1);
+			//gameMap = new TiledGameMap(); //...Or use a default map
 			int[] spawnpoint = gameMap.getPlayerSpawnPoint();
 			p.setX(spawnpoint[0]);
 			p.setY(spawnpoint[1]);
@@ -164,15 +192,69 @@ public class MyGdxGame extends ApplicationAdapter {
 			this.dispose();
 			e.printStackTrace();
 		}
+		maploaded = false;
+	}
+	private void loadmap(String mapname, String musicname) {
+		try {
+			maploaded = false;
+			gameMap = new TiledGameMap(mapname, musicname, 1);// Map to be loaded
+			p=(Player) gameMap.getEntitybyType(new Player());
+			p.setLayer(1);
+			//gameMap = new TiledGameMap(); //...Or use a default map
+			int[] spawnpoint = gameMap.getPlayerSpawnPoint();
+			p.setX(spawnpoint[0]);
+			p.setY(spawnpoint[1]);
+
+			//load the camera
+			camera = new OrthographicCamera();
+			w = Gdx.graphics.getWidth()/1.75f;
+			h = Gdx.graphics.getHeight()/1.75f;
+			camera.setToOrtho(false,w,h);
+			camera.update();
+
+			//confirm map was loaded
+			maploaded = true;
+			return;
+		}catch(Exception e) {
+			this.dispose();
+			e.printStackTrace();
+		}
+		maploaded = false;
+	}
+	
+	private void loadmap(String mapname, String musicname, int standinglayer) {
+		try {
+			maploaded = false;
+			gameMap = new TiledGameMap(mapname, musicname, standinglayer);// Map to be loaded
+			p=(Player) gameMap.getEntitybyType(new Player());
+			p.setLayer(standinglayer);
+			//gameMap = new TiledGameMap(); //...Or use a default map
+			int[] spawnpoint = gameMap.getPlayerSpawnPoint();
+			p.setX(spawnpoint[0]);
+			p.setY(spawnpoint[1]);
+
+			//load the camera
+			camera = new OrthographicCamera();
+			w = Gdx.graphics.getWidth()/1.75f;
+			h = Gdx.graphics.getHeight()/1.75f;
+			camera.setToOrtho(false,w,h);
+			camera.update();
+
+			//confirm map was loaded
+			maploaded = true;
+			return;
+		}catch(Exception e) {
+			this.dispose();
+			e.printStackTrace();
+		}
+		maploaded = false;
 	}
 
 	private void loadhub() {
-		gameMap = new TiledGameMap("hub.tmx", "aFinal Fantasy VII Remake - [ Battle Theme ] Let the Battles Begin (OST).mp3", p.getLayer());// Map to be loaded
-		//gameMap = new TiledGameMap(); //...Or use a default map
-		p=(Player) gameMap.getEntitybyType(new Player());
-		int[] spawnpoint = gameMap.getPlayerSpawnPoint();
-		p.setX(spawnpoint[0]);
-		p.setY(spawnpoint[1]);
+		loadmap("hub.tmx", "Shop (Magolor the Wayfarer).mp3", 2);
+		p.setLayer(2);
+		p.setX(10);
+		p.setY(500);
 	}
 
 	/**
@@ -188,10 +270,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		gameMap = null; 
 		maploaded = false;
 		System.gc();
-		currentstate = gamestate.hub;
 
 		//return to the hub
-		//gotta add this later...
+		currentstate = gamestate.hub;
 	}
 
 	@Override

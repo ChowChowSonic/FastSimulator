@@ -50,7 +50,7 @@ public abstract class Entity {
 	 * The map the object is located in
 	 */
 	protected GameMap map;
-	protected final int LAYER = 1;
+	protected int LAYER = 1;
 	protected boolean grounded = false;
 	
 	public void create (EntitySnapshot snapshot, EntityType type, GameMap map) {
@@ -218,6 +218,9 @@ public abstract class Entity {
 	 */
 	public int getLayer() {
 		return LAYER;
+	}
+	public void setLayer(int layer) {
+		LAYER = layer;
 	}
 	
 }

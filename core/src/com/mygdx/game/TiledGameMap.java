@@ -21,7 +21,7 @@ public class TiledGameMap extends GameMap{
 	CustomOrthRenderer worldRenderer;
 	Music m;
 	Music mloop;
-	int toplayers[], bottomlayers[]; 
+	int toplayers[], bottomlayers[], standinglayer; 
 
 	/**
 	 * Creates a new TiledGameMap object from two files specified by filenames.
@@ -31,7 +31,7 @@ public class TiledGameMap extends GameMap{
 	 * @param standinglayer - The layer the player would start off on (used for rendering purposes).
 	 */
 	public TiledGameMap(String mapFileName, String musicFileName, int standinglayer) {
-
+		this.standinglayer = standinglayer;
 		world = new TmxMapLoader().load(mapFileName);
 		worldRenderer = new CustomOrthRenderer(world);
 
@@ -50,6 +50,31 @@ public class TiledGameMap extends GameMap{
 		}catch(Exception e) {
 			System.out.println("Error loading music");
 		}
+		
+		/* This is to process what's supposed to be in front of and what's behind the player.
+		 * I could just make my life easier and force players to a single defined layer,
+		 * but since I'm going to be reusing this in the future, it's best I make layers 
+		 * non-static in case that ever becomes a function
+		 */
+		
+		bottomlayers = new int[standinglayer+1];
+		toplayers = new int[this.getLayers() - standinglayer];
+		for(int i =0; i < bottomlayers.length; i++) {
+			bottomlayers[i] = i;
+		}
+		for(int i = 0; i < toplayers.length; i++) {
+			toplayers[i] = i+standinglayer;
+		}
+	}
+	/**
+	 * Loads a map without music
+	 * @param mapFileName
+	 * @param standinglayer
+	 */
+	public TiledGameMap(String mapFileName, int standinglayer) {
+		this.standinglayer = standinglayer;
+		world = new TmxMapLoader().load(mapFileName);
+		worldRenderer = new CustomOrthRenderer(world);
 		
 		/* This is to process what's supposed to be in front of and what's behind the player.
 		 * I could just make my life easier and force players to a single defined layer,
@@ -91,6 +116,17 @@ public class TiledGameMap extends GameMap{
 		worldRenderer.render(toplayers);
 		
 	}
+	
+	public void updateStandingLayer(int newLayer) {
+		bottomlayers = new int[newLayer+1];
+		toplayers = new int[this.getLayers() - newLayer];
+		for(int i =0; i < bottomlayers.length; i++) {
+			bottomlayers[i] = i;
+		}
+		for(int i = 0; i < toplayers.length; i++) {
+			toplayers[i] = i+newLayer;
+		}
+	}
 
 	@Override
 	public void update (float delta) {
@@ -123,8 +159,8 @@ public class TiledGameMap extends GameMap{
 		int[] position = {0,0};
 		for(int x = 0; x < this.getWidth(); x++) {
 			for(int y = 0; y < this.getHeight(); y++) {
-				TileType toptile = this.getTileTypeByLocation(1, x, y+1);
-				TileType bottile = this.getTileTypeByLocation(1, x, y);
+				TileType toptile = this.getTileTypeByLocation(standinglayer, x, y+1);
+				TileType bottile = this.getTileTypeByLocation(standinglayer, x, y);
 				if((toptile != null && bottile != null)) {
 					if((!toptile.isCollidable() && !bottile.isCollidable())) {
 						position[0]=x*TileType.TILE_SIZE;
