@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Music.OnCompletionListener;
@@ -19,14 +21,17 @@ public class TiledGameMap extends GameMap{
 	CustomOrthRenderer worldRenderer;
 	Music m;
 	Music mloop;
+	int toplayers[], bottomlayers[]; 
 
 	/**
-	 * Creates a new TiledGameMap object from a file specified by filename.
-	 * The location of the file being refrenced should be within the assets
+	 * Creates a new TiledGameMap object from two files specified by filenames.
+	 * The location of the files being refrenced should be within the assets
 	 * folder, found within the game's directory. 
 	 * @param filename - Name of the file being used. INCLUDE THE EXTENSION.
+	 * @param standinglayer - The layer the player would start off on (used for rendering purposes).
 	 */
-	public TiledGameMap(String mapFileName, String musicFileName) {
+	public TiledGameMap(String mapFileName, String musicFileName, int standinglayer) {
+
 		world = new TmxMapLoader().load(mapFileName);
 		worldRenderer = new CustomOrthRenderer(world);
 
@@ -45,6 +50,21 @@ public class TiledGameMap extends GameMap{
 		}catch(Exception e) {
 			System.out.println("Error loading music");
 		}
+		
+		/* This is to process what's supposed to be in front of and what's behind the player.
+		 * I could just make my life easier and force players to a single defined layer,
+		 * but since I'm going to be reusing this in the future, it's best I make layers 
+		 * non-static in case that ever becomes a function
+		 */
+		
+		bottomlayers = new int[standinglayer+1];
+		toplayers = new int[this.getLayers() - standinglayer];
+		for(int i =0; i < bottomlayers.length; i++) {
+			bottomlayers[i] = i;
+		}
+		for(int i = 0; i < toplayers.length; i++) {
+			toplayers[i] = i+standinglayer;
+		}
 	}
 
 	/**
@@ -55,16 +75,21 @@ public class TiledGameMap extends GameMap{
 		world = new TmxMapLoader().load("map.tmx");
 		worldRenderer = new CustomOrthRenderer(world);
 	}
-
+	/**
+	 * Renders the map itself, then calls GameMap.render() to render entities. 
+	 */
 	@Override
 	public void render (OrthographicCamera camera, SpriteBatch batch) {
 		worldRenderer.setView(camera);
-		worldRenderer.render();
-
+		worldRenderer.render(bottomlayers);//basically the same thing as worldRenderer.render(0);
+		//...because someone forgot to add a method that renders a single layer...
+		//worldRenderer.render();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		super.render(camera, batch);
 		batch.end();
+		worldRenderer.render(toplayers);
+		
 	}
 
 	@Override
@@ -106,6 +131,10 @@ public class TiledGameMap extends GameMap{
 						position[1]=y*TileType.TILE_SIZE;
 						return position;
 					}
+				}else if(bottile == null && toptile == null) {
+					position[0]=x*TileType.TILE_SIZE;
+					position[1]=y*TileType.TILE_SIZE;
+					return position;
 				}
 			}
 		}

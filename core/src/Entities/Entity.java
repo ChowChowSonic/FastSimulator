@@ -212,4 +212,12 @@ public abstract class Entity {
 		return false;
 	}
 	
+	/**
+	 * Method used in classes that are not extensions of the entity class.  
+	 * @return The layer that the player is currently on
+	 */
+	public int getLayer() {
+		return LAYER;
+	}
+	
 }

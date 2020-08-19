@@ -37,6 +37,11 @@ public abstract class GameMap {
 			}
 		}
 	}
+	/**
+	 * Renders the entities that are currently in the map
+	 * @param camera
+	 * @param batch
+	 */
 	public void render(OrthographicCamera camera, SpriteBatch batch) {
 		for (Entity e : entities) {
 			e.render(batch);
@@ -44,9 +49,8 @@ public abstract class GameMap {
 	}
 
 	/**
-	 * The Update(float, float) methods in entities being updated MUST have the following:
-	 * super.update(float, float) in there somewhere
-	 * proper parameters
+	 * The Update(float) methods in entities being updated MUST have the following:
+	 * super.update(float) in there somewhere
 	 * ...otherwise they just wont work
 	 * @param delta
 	 */

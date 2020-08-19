@@ -79,4 +79,5 @@ public class Player extends Entity {
 	public float getYvel() {
 		return this.yvelocity;
 	}
+	
 }//ends class

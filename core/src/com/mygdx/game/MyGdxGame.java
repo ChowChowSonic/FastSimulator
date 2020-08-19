@@ -31,70 +31,71 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Player p;
 	private Stage menu;
 	private Skin defaultlook;
-	
+
 	private float w, h;
 	private double loadtime;
 	private boolean maploaded = false;
 	public enum gamestate{menu, level, hub};
-	public gamestate currentstate = gamestate.menu;
+	public gamestate currentstate = gamestate.level;
 
 	@Override
 	public void create () {
 		//Load in all the required components  
-		loadtime = System.currentTimeMillis();
+		//loadtime = System.currentTimeMillis();
 		defaultlook = new Skin(Gdx.files.internal("flat-earth/skin/flat-earth-ui.json"));
 		batch = new SpriteBatch();
 		new TextureRegion();
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
 		Gdx.graphics.setWindowedMode(screensize.width, screensize.height);
-		
+
 		//load in the main menu
-		Gdx.input.setInputProcessor(menu);
 		menu = new Stage(new ScreenViewport());
+		Gdx.input.setInputProcessor(menu);
 		Button QueuedButton = new TextButton("Play",defaultlook);
 		QueuedButton.setSize(500, 200);
 		QueuedButton.setPosition(menu.getWidth()/3, menu.getHeight()/1.4f);
 		QueuedButton.addListener(new InputListener() {
 			@Override
-		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				currentstate = gamestate.level;
-		    }
-		    @Override
-		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		        currentstate = gamestate.level;
-		        return true;
-		    }
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				currentstate = gamestate.hub;
+			}
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				currentstate = gamestate.hub;
+				return true;
+			}
 		});
-		
+
 		Button Options = new TextButton("Options",defaultlook);
 		Options.setSize(500, 200);
 		Options.setPosition(menu.getWidth()/3, menu.getHeight()/2.5f);
 		Options.addListener(new InputListener() {
 			@Override
-		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-		        
-		    }
-		    @Override
-		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		        return true;
-		    }
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+
+			}
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
 		});
-		
+
 		Button ExitButton = new TextButton("Exit",defaultlook);
 		ExitButton.setSize(500, 200);
 		ExitButton.setPosition( menu.getWidth()/3, menu.getHeight()/12);
 		ExitButton.addListener(new InputListener() {
 			@Override
-		    public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-		        
-		    }
-		    @Override
-		    public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		        System.exit(0);
-		        return true;
-		    }
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("Worked");
+			}
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				dispose();
+				System.exit(0);
+				return true;
+			}
 		});
-		
+
 		menu.addActor(QueuedButton);
 		menu.addActor(Options);
 		menu.addActor(ExitButton);
@@ -106,13 +107,12 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void render () {
 		if(currentstate == gamestate.menu) {
 			Gdx.gl.glClearColor( 0, 0, 0, 0 );//clears the background
-			  Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );//clears the depth buffer bit
-			  	//...Dont ask me what that is all I know is that these two lines of code stop everything from flickering.
+			Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );//clears the depth buffer bit
+			//...Dont ask me what that is all I know is that these two lines of code stop everything from flickering.
 			menu.act();
 			menu.draw();
 		}
-		//if(loadtime - System.currentTimeMillis() < 10000) buttons.get(0).onclick();
-		//game state
+		
 		else if(currentstate == gamestate.level) {
 			if(!maploaded) loadmap("ExterminationDemo.tmx");
 			float deltatime = Gdx.graphics.getDeltaTime();
@@ -142,29 +142,39 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 	private void loadmap(String mapname) {
 		try {
-		gameMap = new TiledGameMap(mapname, "aFinal Fantasy VII Remake - [ Battle Theme ] Let the Battles Begin (OST).mp3");// Map to be loaded
+			gameMap = new TiledGameMap(mapname, "Final Fantasy VII Remake - "
+					+ " Battle Theme ] Let the Battles Begin (OST).mp3", 1);// Map to be loaded
+			//gameMap = new TiledGameMap(); //...Or use a default map
+			p=(Player) gameMap.getEntitybyType(new Player());
+			int[] spawnpoint = gameMap.getPlayerSpawnPoint();
+			p.setX(spawnpoint[0]);
+			p.setY(spawnpoint[1]);
+
+			//load the camera
+			camera = new OrthographicCamera();
+			w = Gdx.graphics.getWidth()/1.75f;
+			h = Gdx.graphics.getHeight()/1.75f;
+			camera.setToOrtho(false,w,h);
+			camera.update();
+
+			//confirm map was loaded
+			maploaded = true;
+			return;
+		}catch(Exception e) {
+			this.dispose();
+			e.printStackTrace();
+		}
+	}
+
+	private void loadhub() {
+		gameMap = new TiledGameMap("hub.tmx", "aFinal Fantasy VII Remake - [ Battle Theme ] Let the Battles Begin (OST).mp3", p.getLayer());// Map to be loaded
 		//gameMap = new TiledGameMap(); //...Or use a default map
 		p=(Player) gameMap.getEntitybyType(new Player());
 		int[] spawnpoint = gameMap.getPlayerSpawnPoint();
 		p.setX(spawnpoint[0]);
 		p.setY(spawnpoint[1]);
-		
-		//load the camera
-		camera = new OrthographicCamera();
-		w = Gdx.graphics.getWidth()/1.75f;
-		h = Gdx.graphics.getHeight()/1.75f;
-		camera.setToOrtho(false,w,h);
-		camera.update();
-		
-		//confirm map was loaded
-		maploaded = true;
-		return;
-		}catch(Exception e) {
-			this.dispose();
-			e.printStackTrace();
-			System.exit(1);
-		}
-		}
+	}
+
 	/**
 	 * Extracts the player from the mission, cues the mission successful/fail theme, then displays the mission summary menu.
 	 * 
@@ -187,8 +197,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		if (batch!= null)
-		batch.dispose();
+			batch.dispose();
 		if(gameMap != null)
-		gameMap.dispose();
+			gameMap.dispose();
 	}
 }
