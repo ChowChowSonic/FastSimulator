@@ -44,7 +44,7 @@ public abstract class GameMap {
 	 */
 	public void render(OrthographicCamera camera, SpriteBatch batch) {
 		for (Entity e : entities) {
-			e.render(batch);
+			if(e!= null)e.render(batch);
 		}
 	}
 
@@ -112,7 +112,8 @@ public abstract class GameMap {
 	public ArrayList<Entity> getentitylist(){
 		return entities;
 	}
-	public Player getEntitybyType(Player entity) {
+
+	public Player getPlayer() {
 		for(Entity ent : entities) {
 			if (ent instanceof Player) {
 				return (Player) ent;
@@ -120,7 +121,7 @@ public abstract class GameMap {
 		}
 		return null;
 	}
-	public ArrayList<Enemy> getEntitybyType(Enemy entity) {
+	public ArrayList<Enemy> getEnemies() {
 		ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 		for(Entity ent : entities) {
 			if (ent instanceof Enemy) {
@@ -131,12 +132,12 @@ public abstract class GameMap {
 	}
 
 	public void addEntity(Entity e) {
-		entities.add(e);
+		entities.add(0,e);
 	}
 	public void addEntity(ArrayList<Entity> e) {
 		for (int i = 0; i < e.size(); i++)
 			if(e.get(i) !=null)
-				entities.add(e.get(i));
+				entities.add(0,e.get(i));
 			else System.out.println("Entity not found");
 	}
 

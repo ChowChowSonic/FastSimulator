@@ -1,4 +1,6 @@
 How to add a new entity to the game:
-Step 1) in EntityType.java add the following line:
-(Anything in Pointy brackets is a variable)
-<ENTITY_NAME>("<ENTITY_ID>", <ENTITY_WIDTH>, <ENTITY_HEIGHT>, <ENTITY_WEIGHT>)
+Step 1) in EntityType.java add the following line: (Anything in Pointy brackets is a variable)
+	<ENTITY_NAME>("<ENTITY_ID>", <ENTITY_WIDTH>, <ENTITY_HEIGHT>, <ENTITY_WEIGHT>)
+Step 2) Create an EntitySnapshot for the entity
+Step 3) Create a class for the entity, add code where needed 
+Step 4) run super.create() in the constructor and pass the snapshot, EntityType.ENTITY_NAME, and the world you're adding it to. 

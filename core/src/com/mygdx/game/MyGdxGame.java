@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import Entities.Player;
+import Entities.PosterBoard;
 
 public class MyGdxGame extends ApplicationAdapter {
 	/*
@@ -171,7 +172,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		try {
 			maploaded = false;
 			gameMap = new TiledGameMap(mapname, 1);// Map to be loaded
-			p=(Player) gameMap.getEntitybyType(new Player());
+			p=(Player) gameMap.getPlayer();
 			p.setLayer(1);
 			//gameMap = new TiledGameMap(); //...Or use a default map
 			int[] spawnpoint = gameMap.getPlayerSpawnPoint();
@@ -198,7 +199,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		try {
 			maploaded = false;
 			gameMap = new TiledGameMap(mapname, musicname, 1);// Map to be loaded
-			p=(Player) gameMap.getEntitybyType(new Player());
+			p=(Player) gameMap.getPlayer();
 			p.setLayer(1);
 			//gameMap = new TiledGameMap(); //...Or use a default map
 			int[] spawnpoint = gameMap.getPlayerSpawnPoint();
@@ -226,7 +227,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		try {
 			maploaded = false;
 			gameMap = new TiledGameMap(mapname, musicname, standinglayer);// Map to be loaded
-			p=(Player) gameMap.getEntitybyType(new Player());
+			p=(Player) gameMap.getPlayer();
 			p.setLayer(standinglayer);
 			//gameMap = new TiledGameMap(); //...Or use a default map
 			int[] spawnpoint = gameMap.getPlayerSpawnPoint();
@@ -249,12 +250,16 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 		maploaded = false;
 	}
-
-	private void loadhub() {
+	
+	/**
+	 * Loads the hub. Runs a specific set of instructions unique to the hub and loads all required entities. 
+	 */
+	private final void loadhub() {
 		loadmap("hub.tmx", "Shop (Magolor the Wayfarer).mp3", 2);
 		p.setLayer(2);
 		p.setX(10);
 		p.setY(500);
+		gameMap.addEntity(new PosterBoard(gameMap));
 	}
 
 	/**

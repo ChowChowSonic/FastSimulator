@@ -21,7 +21,7 @@ public class Enemy extends Entity{
 		super.create(snapshot, EntityType.ENEMY, world);
 		this.world = world;
 		image = new Texture("badlogic.jpg");
-		p = world.getEntitybyType(new Player());
+		p = world.getPlayer();
 	}
 
 	public void render(SpriteBatch batch){

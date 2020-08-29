@@ -10,6 +10,7 @@ import com.mygdx.game.GameMap;
 public enum EntityType {
 	PLAYER("player", Player.class, 14, 26, 40),
 	ENEMY("enemy", Enemy.class, 20, 20, 100),
+	POSTERBOARD("posterboard", PosterBoard.class, 48, 36, 0),
 	SPRING("spring", Spring.class, 15, 20, 100);
 	private String id;
 	private Class LoaderClass;

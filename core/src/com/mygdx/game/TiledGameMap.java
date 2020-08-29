@@ -21,7 +21,9 @@ public class TiledGameMap extends GameMap{
 	CustomOrthRenderer worldRenderer;
 	Music m;
 	Music mloop;
-	int toplayers[], bottomlayers[], standinglayer; 
+	int toplayers[], standinglayer, bottomlayers[]; 
+	public static enum missiontype{exterminate, spy}
+	
 
 	/**
 	 * Creates a new TiledGameMap object from two files specified by filenames.
